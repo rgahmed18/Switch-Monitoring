@@ -1,0 +1,75 @@
+spring:
+  application:
+    name: switch-monitoring-backend
+  jackson:
+    time-zone: Africa/Casablanca
+    serialization:
+      write-dates-as-timestamps: false
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.OracleDialect
+    open-in-view: false
+  flyway:
+    enabled: false
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH}
+          starttls:
+            enable: ${MAIL_STARTTLS_ENABLE}
+            required: ${MAIL_STARTTLS_REQUIRED}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      compression-type: gzip
+      properties:
+        linger.ms: 100
+        batch.size: 16384
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: switch-monitoring-group
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      auto-commit-interval-ms: 1000
+      max-poll-records: 100
+      properties:
+        spring.json.trusted.packages: "com.hps.switchmonitoring.api.dto"
+        session.timeout.ms: 30000
+
+kafka:
+  partitions: 3
+  replication-factor: 1
+
+server:
+  port: 8080
+
+app:
+  frontend:
+    url: ${FRONTEND_URL}
+  mail:
+    from: ${MAIL_FROM}
+
+logging:
+  level:
+    org.hibernate.SQL: info

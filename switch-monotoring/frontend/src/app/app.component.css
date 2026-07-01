@@ -1,0 +1,67 @@
+:host {
+  font-family: Arial, sans-serif;
+  color: #1e293b;
+}
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.status {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8fafc;
+}
+
+form {
+  display: grid;
+  gap: 8px;
+}
+
+input,
+select,
+button {
+  padding: 8px;
+  border: 1px solid #94a3b8;
+  border-radius: 6px;
+}
+
+button {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

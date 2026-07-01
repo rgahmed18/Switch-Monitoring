@@ -1,0 +1,211 @@
+<div class="min-h-screen bg-background flex">
+
+  <!-- ===================================================================
+       SIDEBAR  -  masquee sur la page de connexion
+       Fond blanc (#FFFFFF)  -  identite de marque HPS
+       =================================================================== -->
+  <aside *ngIf="!isLoginPage"
+         [ngClass]="[
+           'fixed left-0 top-0 h-full border-r border-slate-200 bg-white',
+           'flex flex-col z-50 transition-all duration-300 shadow-sm',
+           collapsed ? 'w-14 sm:w-16' : 'w-48 sm:w-56'
+         ]">
+
+    <!-- ── Logo HPS ──────────────────────────────────────────────────── -->
+    <!--
+      EMPLACEMENT DU LOGO OFFICIEL HPS
+      Pour remplacer : fournir le fichier SVG/PNG et mettre a jour la balise
+      <img> ci-dessous avec src="assets/hps-logo.svg"
+    -->
+    <div class="flex items-center justify-center border-b border-slate-200 shrink-0"
+         [ngClass]="collapsed ? 'px-3 py-4' : 'px-4 py-5'">
+
+      <!-- Logo HPS officiel  -  version complete (sidebar ouverte) -->
+      <ng-container *ngIf="!collapsed">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 66" fill="none"
+             class="h-11 w-auto" aria-label="HPS">
+          <defs>
+            <linearGradient id="hps-slash-full" x1="0.5" y1="1" x2="0.5" y2="0">
+              <stop offset="0%"   stop-color="#F5A623"/>
+              <stop offset="48%"  stop-color="#F97316"/>
+              <stop offset="100%" stop-color="#B91C1C"/>
+            </linearGradient>
+          </defs>
+          <!-- "HPS" en Montserrat ExtraBold noir -->
+          <text x="1" y="54"
+                font-family="Montserrat,Arial Black,sans-serif"
+                font-weight="800"
+                font-size="54"
+                fill="#1D1D1B"
+                letter-spacing="-1.5">HPS</text>
+          <!-- Barre oblique "/" en degarde jaune-orange-rouge -->
+          <path d="M129 64 L142 64 L165 2 L152 2 Z"
+                fill="url(#hps-slash-full)"/>
+        </svg>
+      </ng-container>
+
+      <!-- Logo HPS officiel  -  version reduite (sidebar collapsed) -->
+      <ng-container *ngIf="collapsed">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 52" fill="none"
+             class="h-9 w-auto" aria-label="HPS">
+          <defs>
+            <linearGradient id="hps-slash-mini" x1="0.5" y1="1" x2="0.5" y2="0">
+              <stop offset="0%"   stop-color="#F5A623"/>
+              <stop offset="48%"  stop-color="#F97316"/>
+              <stop offset="100%" stop-color="#B91C1C"/>
+            </linearGradient>
+          </defs>
+          <!-- Seulement la barre oblique quand collapsed -->
+          <path d="M2 50 L13 50 L36 2 L25 2 Z"
+                fill="url(#hps-slash-mini)"/>
+        </svg>
+      </ng-container>
+    </div>
+
+    <!-- ── Nav Items ──────────────────────────────────────────────────── -->
+    <nav class="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.path"
+         [routerLinkActive]="['nav-item-active']"
+         [routerLinkActiveOptions]="{exact: item.path === '/'}"
+         class="relative flex items-center gap-3 rounded-r-md rounded-l-none px-3 py-2.5
+                text-sm font-medium transition-all duration-150
+                text-[#4A4A4A] hover:bg-slate-100 hover:text-[#1D1D1B]">
+        <lucide-icon [img]="item.icon"
+                     class="h-4 w-4 shrink-0 text-[#6B7280]">
+        </lucide-icon>
+        <span *ngIf="!collapsed" class="truncate">{{ item.label | translate }}</span>
+      </a>
+
+      <!-- Section Admin -->
+      <div *ngIf="isAdminUser" class="mt-4 pt-4 border-t border-slate-200">
+        <p *ngIf="!collapsed"
+           class="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+          {{ 'section.admin' | translate }}
+        </p>
+        <a *ngFor="let item of adminItems"
+           [routerLink]="item.path"
+           [routerLinkActive]="['nav-item-active']"
+           class="relative flex items-center gap-3 rounded-r-md rounded-l-none px-3 py-2.5
+                  text-sm font-medium transition-all duration-150
+                  text-[#4A4A4A] hover:bg-slate-100 hover:text-[#1D1D1B]">
+          <lucide-icon [img]="item.icon"
+                       class="h-4 w-4 shrink-0 text-[#6B7280]">
+          </lucide-icon>
+          <span *ngIf="!collapsed" class="truncate">{{ item.label | translate }}</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- ── Bas de sidebar ─────────────────────────────────────────────── -->
+    <div class="border-t border-slate-200 p-2 space-y-0.5 shrink-0">
+
+      <!-- Infos utilisateur -->
+      <div *ngIf="!collapsed && currentUser"
+           class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-slate-50 mb-1 border border-slate-100">
+        <div class="h-6 w-6 rounded-full flex items-center justify-center shrink-0"
+             style="background: linear-gradient(135deg,#F97316,#DC2626)">
+          <span class="text-[10px] font-bold text-white uppercase">
+            {{ currentUser.firstName.charAt(0) }}{{ currentUser.lastName.charAt(0) }}
+          </span>
+        </div>
+        <div class="min-w-0 flex-1 overflow-hidden">
+          <p class="text-xs font-semibold text-[#1D1D1B] truncate">
+            {{ currentUser.firstName }} {{ currentUser.lastName }}
+          </p>
+          <p class="text-[10px] text-slate-400 font-mono truncate">{{ currentUser.role }}</p>
+        </div>
+      </div>
+
+      <!-- Langue -->
+      <button (click)="toggleLanguage()"
+              class="flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm
+                     text-[#4A4A4A] hover:bg-slate-100 hover:text-[#1D1D1B] transition-colors">
+        <lucide-icon [img]="Globe" class="h-4 w-4 shrink-0 text-[#6B7280]"></lucide-icon>
+        <span *ngIf="!collapsed" class="truncate">
+          {{ currentLang === 'fr' ? 'English' : 'Français' }}
+        </span>
+      </button>
+
+      <!-- Reduire / Agrandir -->
+      <button (click)="toggleCollapse()"
+              class="flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm
+                     text-[#4A4A4A] hover:bg-slate-100 hover:text-[#1D1D1B] transition-colors">
+        <lucide-icon *ngIf="collapsed"  [img]="ChevronRight" class="h-4 w-4 shrink-0 text-[#6B7280]"></lucide-icon>
+        <lucide-icon *ngIf="!collapsed" [img]="ChevronLeft"  class="h-4 w-4 shrink-0 text-[#6B7280]"></lucide-icon>
+        <span *ngIf="!collapsed" class="truncate">{{ 'app.collapse' | translate }}</span>
+      </button>
+
+      <!-- Deconnexion -->
+      <button (click)="logout()"
+              class="flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm
+                     text-red-500 hover:bg-red-50 transition-colors">
+        <lucide-icon [img]="LogOutIcon" class="h-4 w-4 shrink-0"></lucide-icon>
+        <span *ngIf="!collapsed" class="truncate">{{ 'app.logout' | translate }}</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================================================================
+       ZONE PRINCIPALE
+       =================================================================== -->
+  <div class="flex flex-col flex-1 min-h-screen transition-all duration-300 min-w-0"
+       [ngClass]="!isLoginPage ? (collapsed ? 'ml-14 sm:ml-16' : 'ml-48 sm:ml-56') : ''">
+
+    <!-- Top bar -->
+    <header *ngIf="!isLoginPage"
+            class="border-b bg-card/95 sticky top-0 z-40 w-full shrink-0">
+      <div class="flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3 gap-2">
+        <h2 class="text-xs sm:text-sm font-semibold text-foreground truncate min-w-0 flex-1"
+            style="font-family:var(--font-heading)">
+          {{ getPageTitle() | translate }}
+        </h2>
+
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+
+          <!-- Project selector -->
+          <app-project-selector></app-project-selector>
+
+          <!-- Theme toggle -->
+          <button (click)="toggleDarkMode()"
+                  class="p-2 rounded-md hover:bg-muted/50 transition-colors
+                         text-muted-foreground hover:text-foreground"
+                  title="Changer le theme">
+            <lucide-icon *ngIf="isDarkMode"  [img]="Sun"  class="w-4 h-4"></lucide-icon>
+            <lucide-icon *ngIf="!isDarkMode" [img]="Moon" class="w-4 h-4"></lucide-icon>
+          </button>
+
+          <!-- Live / Pause toggle  -  gradient HPS quand actif -->
+          <button (click)="toggleLive()"
+                  [ngClass]="[
+                    'flex items-center gap-2 rounded-md px-3 py-1.5',
+                    'text-xs font-semibold tracking-wide transition-all uppercase',
+                    isLive
+                      ? 'btn-live-active shadow-[0_2px_12px_rgba(249,115,22,0.4)]'
+                      : 'border border-destructive/30 bg-destructive/5 text-destructive'
+                  ]">
+            <span [ngClass]="[
+                    'h-2 w-2 rounded-full shrink-0',
+                    isLive
+                      ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)] animate-pulse'
+                      : 'bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+                  ]">
+            </span>
+            {{ isLive ? ('topbar.live' | translate) : ('topbar.paused' | translate) }}
+            <span *ngIf="!isLive && bufferSize > 0"
+                  class="ml-1 px-1.5 py-0.5 rounded bg-destructive/20 text-destructive text-[10px] font-bold tabular-nums">
+              +{{ bufferSize }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenu de la page -->
+    <main [ngClass]="!isLoginPage ? 'px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6' : ''"
+          class="flex-1 bg-background overflow-x-hidden min-w-0 w-full">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+</div>

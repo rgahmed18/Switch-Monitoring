@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Maven build artifacts
+backend/target/
+
+# Angular build cache
+frontend/.angular/
+
+# Environment & secrets — never commit real values
+.env
+.env.*
+!.env.example
+
+# Local Spring profile — contient les vraies valeurs dev, ne jamais committer
+backend/src/main/resources/application-local.yml
+
+# Notes développeur locales — contient des mots de passe, ne jamais committer
+DEVELOPER_NOTES.md
+
+# OS artifacts
+Thumbs.db

@@ -1,0 +1,248 @@
+-- ============================================================================
+-- V3_0_0: CREATE AUTHO_ACTIVITY_ADM TABLE (Oracle Production Schema)
+-- Base: Table officielle de HPS pour le monitoring des transactions
+-- Source: Fournit par l'encadrant (table réelle production banking)
+-- ============================================================================
+
+-- Créer la table AUTHO_ACTIVITY_ADM avec tous les champs
+CREATE TABLE AUTHO_ACTIVITY_ADM
+    (reference_number               CHAR(12 CHAR) ,
+    internal_stan                  CHAR(6 CHAR) ,
+    external_stan                  CHAR(6 CHAR) ,
+    routing_code                   CHAR(6 CHAR) ,
+    capture_code                   CHAR(6 CHAR) ,
+    message_type                   CHAR(4 CHAR),
+    function_code                  CHAR(3 CHAR),
+    processing_code                CHAR(2 CHAR),
+    source_account_code            CHAR(2 CHAR),
+    destination_account_code       CHAR(2 CHAR),
+    action_code                    CHAR(3 CHAR),
+    original_action_code           CHAR(3 CHAR),
+    issuer_action_code             VARCHAR2(6 CHAR),
+    event_code                     CHAR(3 CHAR),
+    network_code                   CHAR(2 CHAR),
+    network_id                     VARCHAR2(4 CHAR),
+    network_data                   VARCHAR2(12 CHAR),
+    issuing_bank                   CHAR(6 CHAR),
+    card_number                    VARCHAR2(22 CHAR),
+    card_sequence_number           NUMBER(3,0),
+    service_code                   CHAR(3 CHAR),
+    start_expiry_date              DATE,
+    end_expiry_date                DATE,
+    transaction_local_date         DATE,
+    transmission_date_and_time     DATE,
+    response_date_and_time         DATE,
+    internal_transmission_time     DATE,
+    capture_date                   DATE,
+    business_date                  DATE,
+    pre_auth_time_limit            DATE,
+    product_code                   CHAR(3 CHAR),
+    card_type                      CHAR(2 CHAR),
+    vip_level                      CHAR(1 CHAR),
+    source_account_entity_code     CHAR(2 CHAR),
+    source_account_entity_id       VARCHAR2(24 CHAR),
+    source_account_sequence        NUMBER(2,0),
+    source_account_type            CHAR(2 CHAR),
+    source_account_number          VARCHAR2(24 CHAR),
+    source_account_entity_level    NUMBER(2,0),
+    destination_account_entity_cod CHAR(2 CHAR),
+    destination_account_entity_id  VARCHAR2(24 CHAR),
+    destination_account_sequence   NUMBER(2,0),
+    destination_account_type       CHAR(2 CHAR),
+    destination_account_number     VARCHAR2(24 CHAR),
+    destination_account_entity_lev NUMBER(2,0),
+    transaction_amount             NUMBER(18,3),
+    cash_back_amount               NUMBER(18,3),
+    transaction_currency           CHAR(3 CHAR),
+    replacement_amount             NUMBER(18,3),
+    billing_amount                 NUMBER(18,3),
+    billing_currency               CHAR(3 CHAR),
+    conversion_rate                NUMBER(14,6),
+    conversion_rate_date           DATE,
+    iss_settlement_amount          NUMBER(18,3),
+    iss_settlement_currency        CHAR(3 CHAR),
+    iss_settlement_date            DATE,
+    iss_conv_rate_settlement       NUMBER(14,6),
+    iss_conv_rate_settlement_date  DATE,
+    acq_settlement_amount          NUMBER(18,3),
+    acq_settlement_currency        CHAR(3 CHAR),
+    acq_settlement_date            DATE,
+    acq_conv_rate_settlement       NUMBER(14,6),
+    acq_conv_rate_settlement_date  DATE,
+    transaction_fee                NUMBER(18,3),
+    iss_settlement_fee             NUMBER(18,3),
+    acq_settlement_fee             NUMBER(18,3),
+    services_setup_code            CHAR(4 CHAR),
+    product_currency_code          CHAR(3 CHAR),
+    period_code                    CHAR(4 CHAR),
+    period_type                    CHAR(1 CHAR),
+    period_value                   NUMBER(2,0),
+    cr_currency_code               CHAR(3 CHAR),
+    cr_credit_limit                NUMBER(18,3),
+    cr_cash_limit                  NUMBER(18,3),
+    cr_loan_limit                  NUMBER(18,3),
+    cr_vip_level                   CHAR(1 CHAR),
+    cr_credit_cur_bal              NUMBER(18,3),
+    cr_cash_cur_bal                NUMBER(18,3),
+    cr_loan_cur_bal                NUMBER(18,3),
+    cr_response_code               CHAR(3 CHAR),
+    cr_pending_aut_credit          NUMBER(18,3),
+    cr_pending_aut_cash            NUMBER(18,3),
+    cr_pending_aut_loan            NUMBER(18,3),
+    cr_available_balance           NUMBER(18,3),
+    cr_first_due_date              DATE,
+    cr_installment_amount          NUMBER(18,3),
+    cr_term_count                  NUMBER(3,0),
+    loyalty_program_code           VARCHAR2(6 CHAR),
+    list_product_code_1            VARCHAR2(15 CHAR),
+    list_product_code_2            VARCHAR2(15 CHAR),
+    list_product_code_3            VARCHAR2(15 CHAR),
+    list_product_code_4            VARCHAR2(15 CHAR),
+    list_product_code_5            VARCHAR2(15 CHAR),
+    loyalty_points_gained          NUMBER(9,0),
+    loyalty_points_redemption      NUMBER(9,0),
+    receiving_institution          VARCHAR2(11 CHAR),
+    acquiring_country_code         CHAR(3 CHAR),
+    acquirer_institution_code      VARCHAR2(11 CHAR),
+    acquirer_bank                  CHAR(6 CHAR),
+    card_acceptor_activity         CHAR(4 CHAR),
+    tcc                            CHAR(1 CHAR),
+    card_acceptor_term_id          VARCHAR2(15 CHAR),
+    card_acceptor_id               VARCHAR2(15 CHAR),
+    card_acc_name_address          VARCHAR2(40 CHAR),
+    pos_entry_mode                 VARCHAR2(4 CHAR),
+    pos_condition_code             CHAR(2 CHAR),
+    pos_data                       CHAR(12 CHAR),
+    forwarding_country_code        CHAR(3 CHAR),
+    forwarding_institution_code    VARCHAR2(11 CHAR),
+    forwarding_bank                CHAR(6 CHAR),
+    authorization_length           NUMBER(1,0),
+    authorization_code             CHAR(6 CHAR),
+    original_authorization_code    VARCHAR2(10 CHAR),
+    authorization_source           CHAR(2 CHAR),
+    card_level                     CHAR(1 CHAR),
+    balance_level                  CHAR(1 CHAR),
+    additional_amount              VARCHAR2(120 CHAR),
+    db_cur_balance                 NUMBER(18,3),
+    limit_amount_before_trn        NUMBER(18,3),
+    limit_index                    CHAR(4 CHAR),
+    limit_id                       NUMBER(2,0),
+    shadow_account_level           CHAR(1 CHAR),
+    host_level                     CHAR(1 CHAR),
+    client_level                   CHAR(1 CHAR),
+    exception_level                CHAR(1 CHAR),
+    action_translation_level       CHAR(1 CHAR),
+    card_limit_exception_level     CHAR(1 CHAR),
+    vip_action_translation_level   CHAR(1 CHAR),
+    autho_period_level             CHAR(1 CHAR),
+    security_verif_level           VARCHAR2(32 CHAR),
+    security_verif_result          VARCHAR2(32 CHAR),
+    address_verification_data      VARCHAR2(40 CHAR),
+    reject_code                    VARCHAR2(4 CHAR),
+    reject_reason                  VARCHAR2(40 CHAR),
+    cps_aci                        CHAR(1 CHAR),
+    cps_transaction_id             CHAR(15 CHAR),
+    cps_validation_code            CHAR(4 CHAR),
+    time_stamp_plus_message        VARCHAR2(14 CHAR),
+    reason_code                    CHAR(4 CHAR),
+    origine_code                   CHAR(1 CHAR),
+    original_transaction_date_time DATE,
+    reversal_stan                  CHAR(6 CHAR),
+    reversal_transaction_date      DATE,
+    chip_application_cryptogram    VARCHAR2(16 CHAR),
+    external_cvv_result_code       VARCHAR2(4 CHAR),
+    chip_cryptogram_info_data      VARCHAR2(2 CHAR),
+    chip_transaction_currency_code VARCHAR2(4 CHAR),
+    chip_transaction_date          VARCHAR2(6 CHAR),
+    chip_transaction_type          VARCHAR2(2 CHAR),
+    chip_transaction_amount        VARCHAR2(12 CHAR),
+    chip_atc                       VARCHAR2(4 CHAR),
+    chip_unpredictable_number      VARCHAR2(8 CHAR),
+    chip_category_code             VARCHAR2(2 CHAR),
+    chip_tvr                       VARCHAR2(10 CHAR),
+    chip_terminal_country_code     VARCHAR2(4 CHAR),
+    chip_aip                       VARCHAR2(4 CHAR),
+    chip_cvm_results               VARCHAR2(6 CHAR),
+    chip_terminal_capability       VARCHAR2(6 CHAR),
+    chip_terminal_type             VARCHAR2(4 CHAR),
+    chip_appli_identifier          VARCHAR2(32 CHAR),
+    chip_appli_version_number      VARCHAR2(4 CHAR),
+    chip_ifd_serial_number         VARCHAR2(8 CHAR),
+    chip_trx_seq_counter           VARCHAR2(8 CHAR),
+    chip_issuer_application_data   VARCHAR2(64 CHAR),
+    chip_other_amount              VARCHAR2(12 CHAR),
+    chip_card_authen_result        VARCHAR2(4 CHAR),
+    chip_condition_code            VARCHAR2(4 CHAR),
+    chip_ccps_transaction_ind      VARCHAR2(4 CHAR),
+    chip_card_authen_reliabil_ind  VARCHAR2(4 CHAR),
+    chip_derivation_key_index      VARCHAR2(4 CHAR),
+    chip_issuer_authent_data       VARCHAR2(32 CHAR),
+    chip_arpc_response_code        VARCHAR2(20 CHAR),
+    chip_issuer_script_result      VARCHAR2(40 CHAR),
+    autho_flag                     CHAR(1 CHAR),
+    reversal_flag                  CHAR(1 CHAR),
+    transaction_flag               CHAR(1 CHAR),
+    matching_status                CHAR(1 CHAR),
+    matching_date                  DATE,
+    matching_level                 CHAR(1 CHAR),
+    matching_date_purge            DATE,
+    private_data_1                 VARCHAR2(44 CHAR),
+    acquirer_resource_code         CHAR(2 CHAR),
+    issuer_resource_code           CHAR(2 CHAR),
+    screen_session_id              NUMBER(10,0),
+    screen_user_name               VARCHAR2(15 CHAR),
+    uf_action_date                 DATE,
+    uf_file_update_code            CHAR(1 CHAR),
+    uf_filename                    VARCHAR2(20 CHAR),
+    uf_purge_date                  CHAR(4 CHAR),
+    uf_action_code                 CHAR(2 CHAR),
+    uf_file_record                 VARCHAR2(256 CHAR),
+    original_table_indicator       VARCHAR2(3 CHAR),
+    current_table_indicator        VARCHAR2(3 CHAR),
+    private_tlv_data               VARCHAR2(1024 CHAR),
+    authorization_id               VARCHAR2(32 CHAR),
+    transaction_id                 VARCHAR2(32 CHAR),
+    user_create                    VARCHAR2(15 CHAR),
+    date_create                    DATE,
+    user_modif                     VARCHAR2(15 CHAR),
+    date_modif                     DATE)
+  PCTFREE     10
+  INITRANS    1
+  MAXTRANS    255
+  TABLESPACE  powercard_data_fe_part01
+  STORAGE   (
+    INITIAL     262144
+    NEXT        262144
+    PCTINCREASE 0
+    MINEXTENTS  1
+    MAXEXTENTS  2147483645
+  )
+  NOCACHE
+  MONITORING
+  NOPARALLEL
+  LOGGING;
+
+-- ============================================================================
+-- CLAUSES DE CONTRAINTE
+-- ============================================================================
+
+ALTER TABLE AUTHO_ACTIVITY_ADM
+ADD CONSTRAINT pk_autho_activity_adm PRIMARY KEY (reference_number, 
+  internal_stan, external_stan, routing_code, capture_code)
+USING INDEX
+  PCTFREE     10
+  INITRANS    40
+  MAXTRANS    255
+  TABLESPACE  powercard_index_fe_part01
+  STORAGE   (
+    INITIAL     131072
+    NEXT        131072
+    PCTINCREASE 0
+    MINEXTENTS  1
+    MAXEXTENTS  2147483645
+  );
+
+-- ============================================================================
+-- COMMIT POUR LA CRÉATION DE TABLE
+-- ============================================================================
+COMMIT;

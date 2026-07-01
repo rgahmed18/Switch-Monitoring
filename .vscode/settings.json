@@ -1,0 +1,16 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"f:\\\\les versions codes\\\\V5\\\\switch-monotoring\" ; powershell -Command \"Test-Path generate-autho-data\\.ps1\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cd \"f:\\\\les versions codes\\\\V5\\\\switch-monotoring\" ; powershell -NoProfile -Command @\"\n# Charger le script\n\\. '\\.\\\\generate-autho-data\\.ps1'\n\n# Générer 1 transaction de test\nWrite-Host \"Génération d'une transaction de test\\.\\.\\.\" -ForegroundColor Cyan\n`\\$testTx = Generate-Transaction\n\n# Convertir en objet PowerShell pour afficher\n`\\$obj = `\\$testTx \\| ConvertFrom-Json\n\nWrite-Host \"\"\nWrite-Host \"✅ Transaction générée avec succès!\" -ForegroundColor Green\nWrite-Host \"\"\nWrite-Host \"APERÇU DES CHAMPS GÉNÉRÉS:\" -ForegroundColor Yellow\nWrite-Host \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\" -ForegroundColor Yellow\n\n`\\$obj \\| Get-Member -MemberType NoteProperty \\| Select-Object -ExpandProperty Name \\| ForEach-Object \\{\n    `\\$value = `\\$obj\\.`\\$_\n    Write-Host \"  ✓ `\\$_\" -ForegroundColor Green\n\\}\n\nWrite-Host \"\"\nWrite-Host \"TOTAL DE CHAMPS: \\$\\(`\\$obj \\| Get-Member -MemberType NoteProperty \\| Measure-Object\\)\\.Count\" -ForegroundColor Cyan\n\"@\n$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "npm run start": true,
+        "mvn clean": true,
+        "npm run build": true
+    },
+    "java.compile.nullAnalysis.mode": "automatic"
+}
