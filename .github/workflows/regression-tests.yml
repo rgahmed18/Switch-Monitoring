@@ -45,7 +45,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: switch-monotoring/frontend
-        run: npm ci
+        # --legacy-peer-deps : conflit de peer-deps preexistant entre ng2-charts@10
+        # (exige @angular/cdk >=21) et Angular 18 utilise par le projet.
+        run: npm ci --legacy-peer-deps
 
       - name: Run unit tests (headless)
         working-directory: switch-monotoring/frontend
