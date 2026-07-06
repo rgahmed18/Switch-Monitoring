@@ -29,6 +29,9 @@ backend/target/
 # Angular build cache
 frontend/.angular/
 
+# Rapports de couverture de tests (generes par ng test --code-coverage)
+frontend/coverage/
+
 # Environment & secrets — never commit real values
 .env
 .env.*

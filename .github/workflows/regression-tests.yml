@@ -1,0 +1,59 @@
+name: Regression Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+          cache-dependency-path: switch-monotoring/backend/pom.xml
+
+      - name: Run backend tests (unitaires + integration Kafka embarque)
+        working-directory: switch-monotoring/backend
+        run: mvn -B test
+
+      - name: Publish backend test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Backend Tests
+          path: 'switch-monotoring/backend/target/surefire-reports/*.xml'
+          reporter: java-junit
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: switch-monotoring/frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: switch-monotoring/frontend
+        run: npm ci
+
+      - name: Run unit tests (headless)
+        working-directory: switch-monotoring/frontend
+        run: npx ng test --watch=false --browsers=ChromeHeadlessCI --code-coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: switch-monotoring/frontend/coverage
