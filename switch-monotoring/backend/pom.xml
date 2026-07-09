@@ -110,6 +110,95 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.12</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <!--
+            Seuil global bas (ratchet) : le projet legacy n'est couvert qu'a ~19%
+            aujourd'hui. Ce seuil empeche uniquement une REGRESSION de couverture
+            globale ; il doit etre releve progressivement au fil des ajouts de tests,
+            jamais abaisse. La vraie exigence de qualite (70%) s'applique au code
+            nouveau/modifie via le profil "diff-coverage" (voir plus bas).
+          -->
+          <execution>
+            <id>check-global-floor</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.15</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!--
+      Profil actif en CI sur les Pull Requests : exige 70% de couverture sur les
+      lignes NOUVELLES/MODIFIEES par la PR (pas sur le fichier entier), sans
+      bloquer sur le code legacy non touche. Usage :
+        mvn verify -Pdiff-coverage \
+          -Ddiff-coverage.diffBase=refs/remotes/origin/main
+    -->
+    <profile>
+      <id>diff-coverage</id>
+      <properties>
+        <diff-coverage.diffBase>HEAD</diff-coverage.diffBase>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.github.surpsg</groupId>
+            <artifactId>diff-coverage-maven-plugin</artifactId>
+            <version>1.3.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>diffCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <diffSource>
+                <git>${diff-coverage.diffBase}</git>
+              </diffSource>
+              <violations>
+                <minCoverage>0.70</minCoverage>
+                <failOnViolation>true</failOnViolation>
+              </violations>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
