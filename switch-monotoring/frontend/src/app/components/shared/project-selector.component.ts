@@ -423,8 +423,12 @@ export class ProjectSelectorComponent implements OnInit, OnDestroy {
       this.activeProject = code;
       this.cdr.markForCheck();
     });
-    // Refresh userStore on init so assignedProjects computed gets fresh data
-    this.userStore.loadFromBackend();
+    // Refresh userStore on init so assignedProjects computed gets fresh data.
+    // GET /admin/users est reserve aux ADMIN cote backend (403 sinon) : les
+    // utilisateurs non-admin se rabattent sur user.projects (donnees de session).
+    if (this.auth.isAdmin()) {
+      this.userStore.loadFromBackend();
+    }
   }
 
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
@@ -437,10 +441,12 @@ export class ProjectSelectorComponent implements OnInit, OnDestroy {
   toggleModal(event: MouseEvent): void {
     event.stopPropagation();
     this.isOpen = !this.isOpen;
-    if (this.isOpen) {
+    if (this.isOpen && this.auth.isAdmin()) {
       this.searchQuery = '';
       // Fetch fresh project assignments so user sees admin changes immediately
       this.userStore.loadFromBackend();
+    } else if (this.isOpen) {
+      this.searchQuery = '';
     }
   }
 

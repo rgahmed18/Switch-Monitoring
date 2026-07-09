@@ -48,10 +48,13 @@ export class UserStoreService {
   private readonly http = inject(HttpClient);
   readonly users = signal<AppUser[]>([...MOCK_USERS]);
 
-  constructor() {
-    this.loadFromBackend();
-  }
-
+  /**
+   * Charge la liste des utilisateurs depuis /admin/users (reserve aux ADMIN).
+   * Doit etre appele explicitement par les composants admin qui en ont besoin
+   * (jamais depuis le constructeur : ce service est providedIn:'root' et serait
+   * sinon instancie - donc declencherait un appel API rejete en 403 - des le
+   * chargement de n'importe quelle page publique, y compris non authentifiee).
+   */
   loadFromBackend(): void {
     this.http.get<any[]>(`${API_BASE}/admin/users`).subscribe({
       next: list => {
