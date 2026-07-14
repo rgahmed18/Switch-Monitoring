@@ -1,0 +1,39 @@
+spring:
+  jackson:
+    time-zone: Africa/Casablanca
+    serialization:
+      write-dates-as-timestamps: false
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.OracleDialect
+    open-in-view: false
+  flyway:
+    enabled: true
+  mail:
+    host: localhost
+    port: 2525
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+            required: false
+  kafka:
+    bootstrap-servers: localhost:9092
+
+app:
+  frontend:
+    url: http://localhost:4200
+  mail:
+    from: no-reply@test.local
+
+logging:
+  level:
+    org.hibernate.SQL: warn
