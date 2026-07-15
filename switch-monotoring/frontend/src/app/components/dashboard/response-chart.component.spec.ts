@@ -19,6 +19,18 @@ describe('ResponseChartComponent', () => {
     expect(component.doughnutChartData.labels).toEqual([]);
   });
 
+  it('devrait vider le graphique si le filtre passe d\'un resultat non-vide a vide (pas de donnees figees)', () => {
+    component.transactions = [tx({ responseCode: '00' } as any), tx({ responseCode: '51' } as any)];
+    component.ngOnChanges({ transactions: {} as any });
+    expect((component.doughnutChartData.labels as string[]).length).toBeGreaterThan(0);
+
+    component.transactions = [];
+    component.ngOnChanges({ transactions: {} as any });
+
+    expect(component.doughnutChartData.labels).toEqual([]);
+    expect(component.doughnutChartData.datasets[0].data).toEqual([]);
+  });
+
   it('devrait compter les occurrences par responseCode', () => {
     component.transactions = [
       tx({ responseCode: '00' } as any),

@@ -239,6 +239,91 @@ describe('DashboardComponent', () => {
     });
   });
 
+  describe('filtres bout-en-bout : chaque filtre doit reellement reduire component.transactions', () => {
+    // Verifie le vrai symptome signale : appliquer un filtre doit changer le
+    // resultat affiche, pas seulement les listes deroulantes en cascade.
+    beforeEach(() => {
+      component.allRawTransactions = [
+        tx({ referenceNumber: 'AWB_MAROC_APPROVED', acquirerBank: 'AWB', zone: 'Local', channel: 'POS', status: 'APPROVED', currency: 'MAD', mtiCode: '0100', messageType: '0100' } as any),
+        tx({ referenceNumber: 'BNP_FRANCE_DECLINED', acquirerBank: 'BNP', zone: 'International', channel: 'ECOM', status: 'DECLINED', currency: 'EUR', mtiCode: '0200', messageType: '0200' } as any),
+      ];
+    });
+
+    it('onCanalChange() (POS) devrait exclure les transactions ECOM', () => {
+      component.selectedCanal = 'POS';
+      component.onCanalChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['AWB_MAROC_APPROVED']);
+    });
+
+    it('onCurrencyChange() (EUR) devrait exclure les transactions MAD', () => {
+      component.selectedCurrency = 'EUR';
+      component.onCurrencyChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['BNP_FRANCE_DECLINED']);
+    });
+
+    it('onZoneChange() (Local) devrait exclure les transactions internationales', () => {
+      component.selectedZone = 'Local';
+      component.onZoneChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['AWB_MAROC_APPROVED']);
+    });
+
+    it('onCodeGroupeChange() (SUCCES) devrait ne garder que les transactions approuvees', () => {
+      component.allRawTransactions = [
+        tx({ referenceNumber: 'OK', actionCode: '000' } as any),
+        tx({ referenceNumber: 'KO', actionCode: '051' } as any),
+      ];
+      component.selectedCodeGroupe = 'SUCCES';
+      component.onCodeGroupeChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['OK']);
+    });
+
+    it('onMtiGroupChange() (ACHAT) ne devrait garder que les MTI 0200/1200', () => {
+      component.selectedMtiGroup = 'ACHAT';
+      component.onMtiGroupChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['BNP_FRANCE_DECLINED']);
+    });
+
+    it('onTypeChange() (MTI precis) ne devrait garder que le code exact', () => {
+      component.selectedType = '0100 - Authorization Request';
+      component.onTypeChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['AWB_MAROC_APPROVED']);
+    });
+
+    it('onTransactionTypeChange() (processing code) ne devrait garder que le code exact', () => {
+      component.allRawTransactions = [
+        tx({ referenceNumber: 'PURCHASE', processingCode: '01' } as any),
+        tx({ referenceNumber: 'CASH_ADV', processingCode: '03' } as any),
+      ];
+      component.selectedTransactionType = '01 - Purchase';
+      component.onTransactionTypeChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['PURCHASE']);
+    });
+
+    it('onBankChange() ne devrait garder que les transactions de la banque selectionnee', () => {
+      component.selectedBank = 'Attijariwafa Bank';
+      component.onBankChange();
+
+      expect(component.transactions.map(t => t.referenceNumber)).toEqual(['AWB_MAROC_APPROVED']);
+    });
+
+    it('resetAllFilters() devrait restaurer toutes les transactions apres un filtre actif', () => {
+      component.selectedCanal = 'POS';
+      component.onCanalChange();
+      expect(component.transactions.length).toBe(1);
+
+      component.resetAllFilters();
+
+      expect(component.transactions.length).toBe(2);
+    });
+  });
+
   describe('gestion des widgets', () => {
     it('resetWidgets() devrait tout desactiver', () => {
       component.resetWidgets();
@@ -352,7 +437,24 @@ describe('DashboardComponent', () => {
   });
 
   describe('updateKpis', () => {
-    it('ne devrait rien faire si aucune transaction', () => {
+    it('devrait remettre les KPIs a zero si le filtre ne retourne aucune transaction (pas de valeurs figees)', () => {
+      // Simule un premier calcul avec des transactions, puis un filtre qui vide le resultat
+      statsSvcSpy.compute.and.returnValue({ avgLatency: 250, approvalRate: 80, tps: 12 } as any);
+      component.transactions = [tx({ responseCode: '00' })];
+      component['updateKpis']();
+      expect(component.avgLatency).toBe(250);
+
+      component.transactions = [];
+      component['updateKpis']();
+
+      expect(component.avgLatency).toBe(0);
+      expect(component.successRate).toBe(0);
+      expect(component.tps).toBe(0);
+      expect(component.uptime).toBe(0);
+    });
+
+    it('ne devrait pas appeler statsService.compute si aucune transaction', () => {
+      statsSvcSpy.compute.calls.reset();
       component.transactions = [];
       component['updateKpis']();
 

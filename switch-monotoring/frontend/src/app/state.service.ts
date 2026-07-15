@@ -513,6 +513,27 @@ export class AppStateService {
       });
     }
 
+    // ── MESSAGE TYPE INDICATOR PRÉCIS ────────────────────────────────────────
+    // Dropdown "Message Type Indicators" : valeur = "0100 - Authorization Request"
+    // (voir dashboard.component.ts::availableTypes). On extrait le code avant " - ".
+    if (f.type) {
+      const code = f.type.split(' - ')[0].trim();
+      result = result.filter(tx => {
+        const raw  = ((tx as any).mtiCode || (tx as any).messageType || '').trim();
+        const norm = raw.startsWith('1') ? raw.replace(/^1/, '0') : raw;
+        return raw === code || norm === code;
+      });
+    }
+
+    // ── TYPE DE TRANSACTION (processing code) ────────────────────────────────
+    // Dropdown "Type de Transaction" : valeur = "01 - Purchase"
+    // (voir dashboard.component.ts::availableTransactionTypes). tx.processingCode
+    // (CHAR 2) contient le code brut.
+    if (f.transactionType && f.transactionType !== 'Toutes') {
+      const code = f.transactionType.split(' - ')[0].trim();
+      result = result.filter(tx => ((tx as any).processingCode || '').trim() === code);
+    }
+
     // ── DEVISE ────────────────────────────────────────────────────────────────
     // tx.currency = transactionCurrency mappé par ApiService ('MAD','EUR','GBP','USD','TND')
     if (f.currency) {
@@ -625,7 +646,9 @@ export class AppStateService {
     if (f.selectedCountry)    count++;
     if (f.selectedBank)       count++;
     if (f.channel)            count++;
+    if (f.type)               count++;
     if (f.mtiGroup)           count++;
+    if (f.transactionType && f.transactionType !== 'Toutes') count++;
     if (f.currency)           count++;
     if (f.codeReponseGroupe)  count++;
     if (f.paymentNetwork)     count++;

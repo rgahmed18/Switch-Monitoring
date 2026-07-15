@@ -30,7 +30,7 @@ describe('SlaTrackingComponent', () => {
     expect(component.slaThresholds.uptime).toBe(99.90);
   });
 
-  it('devrait calculer le successRate en comptant APPROVED et PENDING comme reussis', () => {
+  it('devrait calculer le successRate en ne comptant que APPROVED comme reussi (coherent avec TransactionStatsService)', () => {
     component.transactions = [
       tx({ status: 'APPROVED' } as any),
       tx({ status: 'PENDING' } as any),
@@ -40,7 +40,7 @@ describe('SlaTrackingComponent', () => {
 
     component.ngOnChanges({ transactions: {} as any });
 
-    expect(component.successRate).toBe(50);
+    expect(component.successRate).toBe(25);
   });
 
   it('devrait calculer la latence moyenne uniquement sur les tx avec latencyMs', () => {

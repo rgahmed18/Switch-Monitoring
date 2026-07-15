@@ -10,9 +10,9 @@ describe('EntryModeDistributionComponent', () => {
     component = new EntryModeDistributionComponent(apiSpy);
   });
 
-  it('devrait regrouper les transactions par entry_mode', () => {
+  it('devrait regrouper les transactions par posEntryMode', () => {
     component.transactions = [
-      { entry_mode: '05' }, { entry_mode: '05' }, { entry_mode: '02' },
+      { posEntryMode: '05' }, { posEntryMode: '05' }, { posEntryMode: '02' },
     ];
 
     component.ngOnInit();
@@ -21,7 +21,7 @@ describe('EntryModeDistributionComponent', () => {
     expect(chip.count).toBe(2);
   });
 
-  it('devrait utiliser 00 (Non specifie) si entry_mode absent', () => {
+  it('devrait utiliser 00 (Non specifie) si posEntryMode absent', () => {
     component.transactions = [{}];
 
     component.ngOnInit();
@@ -31,7 +31,7 @@ describe('EntryModeDistributionComponent', () => {
 
   it('devrait calculer contactlessPercentage sur les modes 06/07/08/09', () => {
     component.transactions = [
-      { entry_mode: '06' }, { entry_mode: '05' },
+      { posEntryMode: '06' }, { posEntryMode: '05' },
     ];
 
     component.ngOnInit();
@@ -41,7 +41,7 @@ describe('EntryModeDistributionComponent', () => {
   });
 
   it('devrait calculer chipPercentage sur le mode 05', () => {
-    component.transactions = [{ entry_mode: '05' }, { entry_mode: '05' }];
+    component.transactions = [{ posEntryMode: '05' }, { posEntryMode: '05' }];
 
     component.ngOnInit();
 
@@ -49,7 +49,7 @@ describe('EntryModeDistributionComponent', () => {
   });
 
   it('devrait calculer manualPercentage sur les modes 01/02', () => {
-    component.transactions = [{ entry_mode: '02' }, { entry_mode: '05' }];
+    component.transactions = [{ posEntryMode: '02' }, { posEntryMode: '05' }];
 
     component.ngOnInit();
 
@@ -57,7 +57,7 @@ describe('EntryModeDistributionComponent', () => {
   });
 
   it('securePaymentsPercentage devrait sommer contactless + chip', () => {
-    component.transactions = [{ entry_mode: '06' }, { entry_mode: '05' }, { entry_mode: '02' }];
+    component.transactions = [{ posEntryMode: '06' }, { posEntryMode: '05' }, { posEntryMode: '02' }];
 
     component.ngOnInit();
 
@@ -66,17 +66,17 @@ describe('EntryModeDistributionComponent', () => {
   });
 
   it('manualFraudRate devrait etre 0 sans transaction manuelle', () => {
-    component.transactions = [{ entry_mode: '05' }];
+    component.transactions = [{ posEntryMode: '05' }];
 
     component.ngOnInit();
 
     expect(component.manualFraudRate).toBe(0);
   });
 
-  it('manualFraudRate devrait compter les echecs (response_code != 00) parmi les manuelles', () => {
+  it('manualFraudRate devrait compter les echecs (responseCode != 00) parmi les manuelles', () => {
     component.transactions = [
-      { entry_mode: '02', response_code: '51' },
-      { entry_mode: '02', response_code: '00' },
+      { posEntryMode: '02', responseCode: '51' },
+      { posEntryMode: '02', responseCode: '00' },
     ];
 
     component.ngOnInit();

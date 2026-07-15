@@ -56,6 +56,25 @@ public class AuthController {
         }
     }
 
+    // ── GET /api/v1/auth/me ────────────────────────────────────────────────────
+    // Permet a tout utilisateur authentifie (pas seulement ADMIN, contrairement a
+    // GET /admin/users) de recharger ses propres donnees a jour, notamment ses
+    // projets assignes : sans cet endpoint, un non-admin reste bloque sur les
+    // projets figes dans sa session depuis le login, meme apres une reassignation.
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> me(
+            @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
+
+        if (userEmail == null || userEmail.isBlank()) {
+            return ResponseEntity.status(401).body(Map.of("error", "Non authentifié."));
+        }
+
+        return userService.findByEmail(userEmail)
+            .map(u -> ResponseEntity.ok(toUserMap(u)))
+            .orElse(ResponseEntity.status(404).body(Map.of("error", "Utilisateur introuvable.")));
+    }
+
     // ── GET /api/v1/auth/token-info/{token} ───────────────────────────────────
     // Utilisé par la page /activate/:token pour valider le lien avant d'afficher le formulaire.
 

@@ -14,11 +14,17 @@ describe('SummaryWidgetComponent', () => {
     component = TestBed.runInInjectionContext(() => new SummaryWidgetComponent());
   });
 
-  it('ne devrait pas recalculer si transactions est vide', () => {
+  it('devrait remettre les compteurs a zero si transactions est vide (pas de valeurs figees)', () => {
+    component.transactions = [tx({ status: 'APPROVED' } as any), tx({ status: 'DECLINED' } as any)];
+    component.ngOnChanges({ transactions: {} as any });
+    expect(component.approvedCount).toBe(1);
+
     component.transactions = [];
     component.ngOnChanges({ transactions: {} as any });
 
     expect(component.approvedCount).toBe(0);
+    expect(component.declinedCount).toBe(0);
+    expect(component.successRate).toBe('0.0');
   });
 
   it('devrait calculer approvedCount/declinedCount via TransactionStatsService', () => {

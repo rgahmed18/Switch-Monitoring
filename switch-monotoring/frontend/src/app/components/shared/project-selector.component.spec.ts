@@ -34,7 +34,8 @@ describe('ProjectSelectorComponent', () => {
     projectFilterSpy = jasmine.createSpyObj('ProjectFilterService', ['clearProject', 'setProject'], {
       activeProject$: of(''),
     });
-    authSpy = jasmine.createSpyObj('AuthService', ['isAdmin'], { currentUser: () => user({}) });
+    authSpy = jasmine.createSpyObj('AuthService', ['isAdmin', 'refreshCurrentUser'], { currentUser: () => user({}) });
+    authSpy.refreshCurrentUser.and.returnValue(Promise.resolve());
     userStoreSpy = jasmine.createSpyObj('UserStoreService', ['loadFromBackend'], { users: () => [] });
     bankStoreSpy = jasmine.createSpyObj('BankProjectStoreService', ['getAll']);
     bankStoreSpy.getAll.and.returnValue(allBanks);
@@ -74,7 +75,10 @@ describe('ProjectSelectorComponent', () => {
       expect(component.assignedProjects()).toEqual([]);
     });
 
-    it('devrait preferer les donnees fraiches de userStore a celles de la session', () => {
+    it('ne devrait PAS se baser sur userStore.users() (evite de matcher les utilisateurs MOCK par coincidence d\'id)', () => {
+      // UserStoreService demarre avec des utilisateurs MOCK factices (voir user-store.service.ts).
+      // assignedProjects() doit ignorer completement userStore et ne suivre que auth.currentUser(),
+      // sinon un id d'utilisateur reel qui matche un mock afficherait de faux projets assignes.
       Object.defineProperty(authSpy, 'currentUser', {
         value: () => user({ role: 'USER', id: 1, projects: ['AWB'] }),
       });
@@ -82,7 +86,15 @@ describe('ProjectSelectorComponent', () => {
         value: () => [{ ...user({ id: 1 }), projects: ['BNP'] }],
       });
 
-      expect(component.assignedProjects().map(p => p.code)).toEqual(['BNP']);
+      expect(component.assignedProjects().map(p => p.code)).toEqual(['AWB']);
+    });
+
+    it('devrait suivre directement les projets exposes par auth.currentUser(), meme pour un id qui matche un mock userStore', () => {
+      Object.defineProperty(authSpy, 'currentUser', {
+        value: () => user({ role: 'USER', id: 2, projects: ['HSBC'] }),
+      });
+
+      expect(component.assignedProjects().map(p => p.code)).toEqual(['HSBC']);
     });
   });
 
@@ -148,12 +160,33 @@ describe('ProjectSelectorComponent', () => {
       expect(userStoreSpy.loadFromBackend).toHaveBeenCalled();
     });
 
-    it('toggleModal() ne devrait pas recharger les utilisateurs si non-admin', () => {
+    it('toggleModal() devrait rafraichir ses propres donnees via /auth/me si non-admin', () => {
       authSpy.isAdmin.and.returnValue(false);
 
       component.toggleModal(new MouseEvent('click'));
 
       expect(userStoreSpy.loadFromBackend).not.toHaveBeenCalled();
+      expect(authSpy.refreshCurrentUser).toHaveBeenCalled();
+    });
+  });
+
+  describe('ngOnInit', () => {
+    it('devrait charger userStore si admin', () => {
+      authSpy.isAdmin.and.returnValue(true);
+
+      component.ngOnInit();
+
+      expect(userStoreSpy.loadFromBackend).toHaveBeenCalled();
+      expect(authSpy.refreshCurrentUser).not.toHaveBeenCalled();
+    });
+
+    it('devrait rafraichir ses propres donnees via /auth/me si non-admin', () => {
+      authSpy.isAdmin.and.returnValue(false);
+
+      component.ngOnInit();
+
+      expect(userStoreSpy.loadFromBackend).not.toHaveBeenCalled();
+      expect(authSpy.refreshCurrentUser).toHaveBeenCalled();
     });
   });
 

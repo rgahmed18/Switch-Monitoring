@@ -212,6 +212,55 @@ describe('AppStateService', () => {
     });
   });
 
+  describe('applyFilters - type (Message Type Indicator precis)', () => {
+    it('devrait filtrer sur le code MTI extrait du libelle "code - description"', () => {
+      service.setFilters({ type: '0100 - Authorization Request' });
+      const txs = [
+        tx({ referenceNumber: 'MATCH',   messageType: '0100' } as any),
+        tx({ referenceNumber: 'NOMATCH', messageType: '0200' } as any),
+      ];
+
+      const result = service.applyFilters(txs);
+
+      expect(result.map(t => t.referenceNumber)).toEqual(['MATCH']);
+    });
+
+    it('devrait normaliser un MTI 1xxx brut Oracle avant comparaison', () => {
+      service.setFilters({ type: '0200 - Financial Request' });
+      const txs = [tx({ referenceNumber: 'MATCH', messageType: '1200' } as any)];
+
+      const result = service.applyFilters(txs);
+
+      expect(result.map(t => t.referenceNumber)).toEqual(['MATCH']);
+    });
+  });
+
+  describe('applyFilters - transactionType (processing code)', () => {
+    it('devrait filtrer sur le code extrait du libelle "code - description"', () => {
+      service.setFilters({ transactionType: '01 - Purchase' });
+      const txs = [
+        tx({ referenceNumber: 'MATCH',   processingCode: '01' } as any),
+        tx({ referenceNumber: 'NOMATCH', processingCode: '02' } as any),
+      ];
+
+      const result = service.applyFilters(txs);
+
+      expect(result.map(t => t.referenceNumber)).toEqual(['MATCH']);
+    });
+
+    it('ne devrait rien filtrer si la valeur est "Toutes" (defaut)', () => {
+      service.setFilters({ transactionType: 'Toutes' });
+      const txs = [
+        tx({ referenceNumber: 'A', processingCode: '01' } as any),
+        tx({ referenceNumber: 'B', processingCode: '02' } as any),
+      ];
+
+      const result = service.applyFilters(txs);
+
+      expect(result.length).toBe(2);
+    });
+  });
+
   describe('applyFilters - devise', () => {
     it('devrait filtrer sur la devise exacte', () => {
       service.setFilters({ currency: 'EUR' });
@@ -330,6 +379,20 @@ describe('AppStateService', () => {
       service.setFilters({ zone: 'Europe', currency: 'EUR', selectedCountry: 'Maroc' });
 
       expect(service.getActiveFilterCount()).toBe(3);
+    });
+
+    it('getActiveFilterCount() devrait compter le filtre type (MTI precis)', () => {
+      service.setFilters({ type: '0100 - Authorization Request' });
+
+      expect(service.getActiveFilterCount()).toBe(1);
+    });
+
+    it('getActiveFilterCount() devrait compter transactionType sauf si egal a "Toutes"', () => {
+      service.setFilters({ transactionType: 'Toutes' });
+      expect(service.getActiveFilterCount()).toBe(0);
+
+      service.setFilters({ transactionType: '01 - Purchase' });
+      expect(service.getActiveFilterCount()).toBe(1);
     });
   });
 });

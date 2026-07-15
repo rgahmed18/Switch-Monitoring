@@ -7,11 +7,23 @@ describe('AnalysisComparisonComponent', () => {
     component = new AnalysisComparisonComponent();
   });
 
-  it('ne devrait rien faire pour une liste vide', () => {
+  it('devrait reinitialiser toutes les donnees si le filtre ne retourne aucune transaction (pas de valeurs figees)', () => {
+    // Bug reel corrige : un early-return sans reset laissait comparisonData,
+    // bestPerformer, variance... figes sur le dernier resultat non-vide.
+    component.transactions = [{ channel: 'POS' }, { channel: 'ATM' }];
+    component.ngOnChanges();
+    expect(component.comparisonData.length).toBeGreaterThan(0);
+
     component.transactions = [];
     component.ngOnChanges();
 
     expect(component.comparisonData).toEqual([]);
+    expect(component.detailedComparison).toEqual([]);
+    expect(component.maxValue).toBe(0);
+    expect(component.totalValue).toBe(0);
+    expect(component.bestPerformer).toBe('');
+    expect(component.worstPerformer).toBe('');
+    expect(component.variance).toBe(0);
   });
 
   describe('groupement par canal', () => {

@@ -141,4 +141,39 @@ describe('AuthService', () => {
 
     expect(service.mustChangePassword()).toBeFalse();
   });
+
+  describe('refreshCurrentUser()', () => {
+    it('devrait appeler GET /auth/me et mettre a jour les projets assignes', async () => {
+      service.login(credentials).subscribe();
+      httpMock.expectOne(`${environment.apiBaseUrl}/auth/login`).flush({ ...mockUser, projects: [] });
+
+      const refreshPromise = service.refreshCurrentUser();
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/auth/me`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ ...mockUser, projects: 'SGM' } as unknown as AppUser);
+      await refreshPromise;
+
+      expect(service.currentUser()?.projects).toEqual(['SGM']);
+    });
+
+    it('ne devrait rien faire si aucun utilisateur n\'est connecte', async () => {
+      await service.refreshCurrentUser();
+
+      httpMock.expectNone(`${environment.apiBaseUrl}/auth/me`);
+      expect(service.currentUser()).toBeNull();
+    });
+
+    it('devrait conserver la session existante en cas d\'erreur reseau', async () => {
+      service.login(credentials).subscribe();
+      httpMock.expectOne(`${environment.apiBaseUrl}/auth/login`).flush(mockUser);
+
+      const refreshPromise = service.refreshCurrentUser();
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/auth/me`);
+      req.flush({}, { status: 500, statusText: 'Internal Server Error' });
+      await refreshPromise;
+
+      expect(service.currentUser()?.email).toBe(mockUser.email);
+    });
+  });
 });

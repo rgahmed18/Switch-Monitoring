@@ -76,11 +76,7 @@ import { CardModule } from 'primeng/card';
       <!-- Insights Sécurité -->
       <div class="bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-300 rounded-lg p-4 mt-6">
         <h4 class="font-bold text-purple-900 mb-3">Insights Sécurité</h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <span class="text-gray-700">Utilisation 3-D Secure:</span>
-            <div class="font-bold text-purple-700">{{ secure3dUsage }}%</div>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
             <span class="text-gray-700">Taux Fraude (Manuel):</span>
             <div class="font-bold text-blue-700">{{ manualFraudRate }}%</div>
@@ -131,7 +127,6 @@ export class EntryModeDistributionComponent implements OnInit {
   chipCount: number = 0;
   manualPercentage: number = 0;
   manualCount: number = 0;
-  secure3dUsage: number = 0;
   manualFraudRate: number = 0;
   securePaymentsPercentage: number = 0;
   riskyPaymentsPercentage: number = 0;
@@ -159,7 +154,7 @@ export class EntryModeDistributionComponent implements OnInit {
     const total = this.transactions.length;
 
     this.transactions.forEach(tx => {
-      const mode = tx.entry_mode || '00';
+      const mode = tx.posEntryMode || '00';
       modeData.set(mode, (modeData.get(mode) || 0) + 1);
     });
 
@@ -170,7 +165,7 @@ export class EntryModeDistributionComponent implements OnInit {
         name: this.entryModeDescriptions[code]?.name || 'Inconnu',
         category: this.entryModeDescriptions[code]?.category || 'other',
         count,
-        percentage: Math.round((count / total) * 100)
+        percentage: total > 0 ? Math.round((count / total) * 100) : 0
       }))
       .sort((a, b) => b.count - a.count);
 
@@ -178,33 +173,30 @@ export class EntryModeDistributionComponent implements OnInit {
     this.contactlessCount = this.entryModes
       .filter(m => m.category === 'contactless')
       .reduce((sum, m) => sum + m.count, 0);
-    this.contactlessPercentage = Math.round((this.contactlessCount / total) * 100);
+    this.contactlessPercentage = total > 0 ? Math.round((this.contactlessCount / total) * 100) : 0;
 
     this.chipCount = this.entryModes
       .filter(m => m.category === 'chip')
       .reduce((sum, m) => sum + m.count, 0);
-    this.chipPercentage = Math.round((this.chipCount / total) * 100);
+    this.chipPercentage = total > 0 ? Math.round((this.chipCount / total) * 100) : 0;
 
     this.manualCount = this.entryModes
       .filter(m => m.category === 'manual')
       .reduce((sum, m) => sum + m.count, 0);
-    this.manualPercentage = Math.round((this.manualCount / total) * 100);
+    this.manualPercentage = total > 0 ? Math.round((this.manualCount / total) * 100) : 0;
 
     // Analyse sécurité
     this.securePaymentsPercentage = this.contactlessPercentage + this.chipPercentage;
-    this.riskyPaymentsPercentage = 100 - this.securePaymentsPercentage;
+    this.riskyPaymentsPercentage = total > 0 ? 100 - this.securePaymentsPercentage : 0;
 
     // Taux fraude manuel (estimation)
-    const manualTxs = this.transactions.filter(tx => 
-      this.entryModeDescriptions[tx.entry_mode]?.category === 'manual'
+    const manualTxs = this.transactions.filter(tx =>
+      this.entryModeDescriptions[tx.posEntryMode]?.category === 'manual'
     );
-    const manualFailed = manualTxs.filter(tx => tx.response_code !== '00').length;
-    this.manualFraudRate = manualTxs.length > 0 
+    const manualFailed = manualTxs.filter(tx => tx.responseCode !== '00').length;
+    this.manualFraudRate = manualTxs.length > 0
       ? Math.round((manualFailed / manualTxs.length) * 100)
       : 0;
-
-    // 3-D Secure usage (estimation)
-    this.secure3dUsage = Math.min(100, 85); // Placeholder
 
     // Graphique Radar
     const colors = ['#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#EC4899'];

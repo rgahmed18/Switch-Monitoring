@@ -81,6 +81,18 @@ describe('MtiDistributionComponent', () => {
     expect(component.mtiDetails.length).toBe(1);
   });
 
+  it('devrait reinitialiser mtiDetails si le filtre passe d\'un resultat non-vide a vide (pas de valeurs figees)', () => {
+    component.transactions = [{ mtiCode: '0100' }, { mtiCode: '0200' }];
+    component.ngOnChanges({ transactions: {} as any });
+    expect(component.mtiDetails.length).toBe(2);
+
+    component.transactions = [];
+    component.ngOnChanges({ transactions: {} as any });
+
+    expect(component.mtiDetails).toEqual([]);
+    expect(component.chartData).toBeNull();
+  });
+
   describe('helpers de style (getMtiClass/getMtiTextColor/getMtiBgColor)', () => {
     beforeEach(() => {
       component.transactions = [{ mtiCode: '0100' }];

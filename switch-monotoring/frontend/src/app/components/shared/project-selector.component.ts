@@ -324,7 +324,11 @@ export class ProjectSelectorComponent implements OnInit, OnDestroy {
   activeProject = '';
   searchQuery   = '';
 
-  // Reactive: auto-updates when userStore.users() or auth.currentUser() changes
+  // Reactive: auto-updates when auth.currentUser() changes (login, ou apres
+  // AuthService.refreshCurrentUser() -> GET /auth/me). Ne depend PAS de
+  // userStore.users(), qui est initialise avec des utilisateurs MOCK de demo
+  // (voir UserStoreService) : matcher dessus par coincidence d'id renverrait
+  // de fausses assignations de projets au lieu des vraies donnees utilisateur.
   readonly assignedProjects = computed<BankProject[]>(() => {
     const user = this.auth.currentUser();
     if (!user) return [];
@@ -332,12 +336,7 @@ export class ProjectSelectorComponent implements OnInit, OnDestroy {
     const all = this.bankStore.getAll();
     if (user.role === 'ADMIN') return all;
 
-    // Prefer fresh data from userStore; fall back to session data
-    const stored = this.userStore.users().find(u => u.id === user.id);
-    const storedCodes: string[] = stored?.projects ?? [];
-    const sessionCodes: string[] = user.projects ?? [];
-    const codes = storedCodes.length > 0 ? storedCodes : sessionCodes;
-
+    const codes: string[] = user.projects ?? [];
     if (codes.length === 0) return [];
     return all.filter(b => codes.includes(b.code));
   });
@@ -423,11 +422,13 @@ export class ProjectSelectorComponent implements OnInit, OnDestroy {
       this.activeProject = code;
       this.cdr.markForCheck();
     });
-    // Refresh userStore on init so assignedProjects computed gets fresh data.
-    // GET /admin/users est reserve aux ADMIN cote backend (403 sinon) : les
-    // utilisateurs non-admin se rabattent sur user.projects (donnees de session).
+    // ADMIN : rafraichit la liste complete des utilisateurs/projets via userStore.
+    // Non-ADMIN : GET /admin/users est reserve aux ADMIN (403 sinon), donc on
+    // recharge seulement ses propres donnees via /auth/me (voir AuthService).
     if (this.auth.isAdmin()) {
       this.userStore.loadFromBackend();
+    } else {
+      this.auth.refreshCurrentUser();
     }
   }
 
@@ -441,12 +442,14 @@ export class ProjectSelectorComponent implements OnInit, OnDestroy {
   toggleModal(event: MouseEvent): void {
     event.stopPropagation();
     this.isOpen = !this.isOpen;
-    if (this.isOpen && this.auth.isAdmin()) {
+    if (this.isOpen) {
       this.searchQuery = '';
       // Fetch fresh project assignments so user sees admin changes immediately
-      this.userStore.loadFromBackend();
-    } else if (this.isOpen) {
-      this.searchQuery = '';
+      if (this.auth.isAdmin()) {
+        this.userStore.loadFromBackend();
+      } else {
+        this.auth.refreshCurrentUser();
+      }
     }
   }
 

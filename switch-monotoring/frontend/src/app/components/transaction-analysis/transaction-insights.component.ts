@@ -187,7 +187,26 @@ export class TransactionInsightsComponent implements OnChanges {
   }
 
   calculateInsights() {
-    if (!this.transactions || this.transactions.length === 0) return;
+    if (!this.transactions || this.transactions.length === 0) {
+      // Filtre actif ne retournant aucune transaction : reinitialiser tous les
+      // indicateurs plutot que de garder les valeurs du filtre precedent.
+      this.totalTransactions = 0;
+      this.eligibleTotal     = 0;
+      this.approvedCount     = 0;
+      this.declinedCount     = 0;
+      this.errorCount        = 0;
+      this.approvalRate      = 0;
+      this.avgLatency        = 0;
+      this.transactionCount  = 0;
+      this.totalVolume       = 0;
+      this.avgAmount         = 0;
+      this.approvalTrend     = 0;
+      this.topChannel        = '';
+      this.topChannelCount   = 0;
+      this.topChannelPercentage = 0;
+      this.topAcquirers      = [];
+      return;
+    }
 
     // ── Statistiques via le service centralisé ──────────────────────────────
     const s = this.statsService.compute(this.transactions);

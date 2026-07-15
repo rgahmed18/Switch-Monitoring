@@ -9,11 +9,31 @@ describe('TransactionInsightsComponent', () => {
     component = TestBed.runInInjectionContext(() => new TransactionInsightsComponent());
   });
 
-  it('ne devrait rien calculer pour une liste vide', () => {
+  it('devrait reinitialiser tous les indicateurs si le filtre ne retourne aucune transaction (pas de valeurs figees)', () => {
+    // Bug reel corrige : un early-return sans reset laissait les KPIs
+    // (approvalRate, topChannel, topAcquirers...) figes sur le dernier
+    // resultat non-vide quand un filtre restrictif retournait 0 transaction.
+    component.transactions = [
+      { status: 'APPROVED', channel: 'POS', acquirerBank: 'AWB' },
+      { status: 'DECLINED', channel: 'ATM', acquirerBank: 'BNP' },
+    ];
+    component.ngOnChanges();
+    expect(component.totalTransactions).toBe(2);
+
     component.transactions = [];
     component.ngOnChanges();
 
     expect(component.totalTransactions).toBe(0);
+    expect(component.approvedCount).toBe(0);
+    expect(component.declinedCount).toBe(0);
+    expect(component.approvalRate).toBe(0);
+    expect(component.avgLatency).toBe(0);
+    expect(component.totalVolume).toBe(0);
+    expect(component.topChannel).toBe('');
+    expect(component.topChannelCount).toBe(0);
+    expect(component.topChannelPercentage).toBe(0);
+    expect(component.topAcquirers).toEqual([]);
+    expect(component.approvalTrend).toBe(0);
   });
 
   it('devrait calculer approvalRate/approvedCount/declinedCount via le service de stats', () => {

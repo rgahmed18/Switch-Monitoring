@@ -97,6 +97,29 @@ describe('TransactionAnalysisComponent', () => {
       expect(component.filteredTransactions.map((t: any) => t.referenceNumber)).toEqual(['B']);
     });
 
+    it('devrait filtrer par montant min/max (reproduit le bug signale : le slider ne filtrait rien)', () => {
+      component.transactions = [
+        tx({ referenceNumber: 'LOW',  amount: 100 }),
+        tx({ referenceNumber: 'MID',  amount: 5_000_000 }),
+        tx({ referenceNumber: 'HIGH', amount: 15_000_000 }),
+      ];
+
+      component.onFiltersChange({ minAmount: 1_000_000, maxAmount: 10_000_000, sliderMax: 20_000_000 });
+
+      expect(component.filteredTransactions.map((t: any) => t.referenceNumber)).toEqual(['MID']);
+    });
+
+    it('ne devrait pas filtrer sur le montant si minAmount=0 et maxAmount=sliderMax (etat par defaut)', () => {
+      component.transactions = [
+        tx({ referenceNumber: 'LOW',  amount: 100 }),
+        tx({ referenceNumber: 'HIGH', amount: 15_000_000 }),
+      ];
+
+      component.onFiltersChange({ minAmount: 0, maxAmount: 20_000_000, sliderMax: 20_000_000 });
+
+      expect(component.filteredTransactions.length).toBe(2);
+    });
+
     it('devrait filtrer par plage de dates', () => {
       component.onFiltersChange({ startDate: '2026-07-14', endDate: '2026-07-14' });
 

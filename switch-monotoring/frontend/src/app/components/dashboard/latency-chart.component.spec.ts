@@ -21,6 +21,20 @@ describe('LatencyChartComponent', () => {
     expect(component.chartData.labels).toEqual([]);
   });
 
+  it('devrait vider le graphique si le filtre passe d\'un resultat non-vide a vide (pas de donnees figees)', () => {
+    const now = new Date(); now.setSeconds(0, 0);
+    component.transactions = [tx({ transmissionDateAndTime: now.toISOString(), latencyMs: 300 } as any)];
+    component.ngOnChanges({ transactions: {} as any });
+    expect((component.chartData.datasets[0].data as number[]).length).toBeGreaterThan(0);
+
+    component.transactions = [];
+    component.ngOnChanges({ transactions: {} as any });
+
+    expect(component.chartData.labels).toEqual([]);
+    expect(component.chartData.datasets[0].data).toEqual([]);
+    expect(component.chartData.datasets[1].data).toEqual([]);
+  });
+
   it('devrait calculer la latence moyenne par minute', () => {
     const now = new Date(); now.setSeconds(0, 0);
     component.transactions = [

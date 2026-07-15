@@ -33,7 +33,7 @@ const CODE_META: Record<string, { label: string; category: string; tier: 'red' |
 
 const TIER_CLASSES = {
   red:    { text: 'text-red-400',    bar: 'bg-red-500',    badge: 'bg-red-500/10 text-red-400 border-red-500/30'    },
-  orange: { text: 'text-blue-400', bar: 'bg-blue-600', badge: 'bg-blue-500/10 text-blue-400 border-blue-500/30' },
+  orange: { text: 'text-orange-400', bar: 'bg-orange-500', badge: 'bg-orange-500/10 text-orange-400 border-orange-500/30' },
   yellow: { text: 'text-yellow-400', bar: 'bg-yellow-500', badge: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' },
   blue:   { text: 'text-blue-400',   bar: 'bg-blue-500',   badge: 'bg-blue-500/10 text-blue-400 border-blue-500/30'   },
   muted:  { text: 'text-slate-400',  bar: 'bg-slate-500',  badge: 'bg-slate-500/10 text-slate-400 border-slate-500/30'  },

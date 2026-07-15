@@ -60,29 +60,31 @@ public class IsoSimulatorTask {
         "788"                         // Tunisia
     };
 
-    // Country → ISO 4217 numeric transaction currency
+    // Country (ISO 3166 numeric) → devise ISO 4217 alpha-3 (cf. inject_data.sql
+    // qui utilise deja des codes alpha : MAD/EUR/GBP/USD/TND — la table
+    // AUTHO_ACTIVITY_ADM attend un CHAR(3) alpha, pas un code numerique).
     private static final Map<String, String> COUNTRY_CURRENCY = Map.of(
-        "504", "504",   // MAD
-        "840", "840",   // USD
-        "978", "978",   // EUR
-        "250", "978",   // EUR (France)
-        "826", "826",   // GBP
-        "682", "682",   // SAR
-        "784", "784",   // AED
-        "012", "012",   // DZD
-        "788", "788"    // TND
+        "504", "MAD",   // Maroc
+        "840", "USD",   // Etats-Unis
+        "978", "EUR",   // Zone Euro
+        "250", "EUR",   // France
+        "826", "GBP",   // Royaume-Uni
+        "682", "SAR",   // Arabie Saoudite
+        "784", "AED",   // Emirats Arabes Unis
+        "012", "DZD",   // Algerie
+        "788", "TND"    // Tunisie
     );
 
     // Approximate conversion rate to MAD (1 foreign unit = N MAD)
     private static final Map<String, Double> RATE_TO_MAD = Map.of(
-        "504", 1.0,
-        "840", 10.30,
-        "978", 11.15,
-        "826", 13.05,
-        "682", 2.75,
-        "784", 2.80,
-        "012", 0.075,
-        "788", 3.30
+        "MAD", 1.0,
+        "USD", 10.30,
+        "EUR", 11.15,
+        "GBP", 13.05,
+        "SAR", 2.75,
+        "AED", 2.80,
+        "DZD", 0.075,
+        "TND", 3.30
     );
 
     // POS merchants avec leur MCC associé [nom, mcc]
@@ -170,16 +172,16 @@ public class IsoSimulatorTask {
         String countryCode = COUNTRIES[random.nextInt(COUNTRIES.length)];
         request.setAcquiringCountryCode(countryCode);
 
-        String txCurrency = COUNTRY_CURRENCY.getOrDefault(countryCode, "504");
+        String txCurrency = COUNTRY_CURRENCY.getOrDefault(countryCode, "MAD");
         request.setTransactionCurrency(txCurrency);
 
         double baseAmount = 10 + (1500 - 10) * random.nextDouble();
         request.setTransactionAmount(bd(baseAmount, 3));
 
-        // Billing always in MAD (504)
+        // Billing toujours en MAD
         double rateToMad = RATE_TO_MAD.getOrDefault(txCurrency, 1.0);
         double billingAmt = baseAmount * rateToMad;
-        request.setBillingCurrency("504");
+        request.setBillingCurrency("MAD");
         request.setBillingAmount(bd(billingAmt, 3));
         request.setConversionRate(bd(rateToMad, 6));
 
@@ -213,27 +215,35 @@ public class IsoSimulatorTask {
         // Canal : ATM 30% | ECOM 20% | POS 50%
         int channelRoll = random.nextInt(10);
         if (channelRoll < 3) {
-            // ATM / GAB
+            // ATM / GAB — saisie PIN clavier (mode d'entrée '05' EMV majoritaire)
             String atmId = "ATM" + acquirer + String.format("%03d", random.nextInt(999));
             request.setCardAcceptorId(atmId.length() > 15 ? atmId.substring(0, 15) : atmId);
             request.setCardAcceptorTermId(atmId.length() > 15 ? atmId.substring(0, 15) : atmId);
             request.setCardAccNameAddress("Retrait GAB " + acquirer);
             request.setCardAcceptorActivity("6011");
+            request.setPosEntryMode("05");
         } else if (channelRoll < 5) {
-            // ECOM — posConditionCode '59' = norme ISO 8583 E-commerce
+            // ECOM — posConditionCode '59' = norme ISO 8583 E-commerce, saisie web '81'
             String ecomId = "ECOM" + String.format("%04d", random.nextInt(9999));
             request.setCardAcceptorId(ecomId);
             request.setCardAccNameAddress(ECOM_MERCHANTS[random.nextInt(ECOM_MERCHANTS.length)]);
             request.setPosConditionCode("59");
             request.setSecurityVerifLevel("3DS");
+            request.setPosEntryMode("81");
         } else {
-            // POS — avec MCC réel
+            // POS — avec MCC réel ; mix EMV(60%) / NFC(20%) / manuel(11%) / bande(9%)
             String[] merchant = POS_MERCHANTS[random.nextInt(POS_MERCHANTS.length)];
             String termId = "TRM" + String.format("%03d", random.nextInt(999));
             request.setCardAcceptorId(termId);
             request.setCardAcceptorTermId(termId);
             request.setCardAccNameAddress(merchant[0]);
             request.setCardAcceptorActivity(merchant[1]);
+
+            int entryRoll = random.nextInt(100);
+            if (entryRoll < 11)      request.setPosEntryMode("01"); // manuel
+            else if (entryRoll < 20) request.setPosEntryMode("02"); // bande magnétique
+            else if (entryRoll < 40) request.setPosEntryMode("07"); // NFC / sans contact
+            else                     request.setPosEntryMode("05"); // EMV
         }
 
         // Simulate latency: mostly 30–150 ms, 4% chance of SLA breach (>5 s)

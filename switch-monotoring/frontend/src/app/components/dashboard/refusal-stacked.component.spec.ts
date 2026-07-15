@@ -69,6 +69,6 @@ describe('RefusalStackedComponent', () => {
 
     component.ngOnChanges({ transactions: {} as any });
 
-    expect(component.chartData.datasets[0].label).toBe('Approuvees');
+    expect(component.chartData.datasets[0].label).toBe('Approuvées');
   });
 });

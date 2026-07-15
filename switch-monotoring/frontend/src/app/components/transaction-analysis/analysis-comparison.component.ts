@@ -187,6 +187,16 @@ export class AnalysisComparisonComponent implements OnChanges {
 
   updateComparison() {
     if (!this.transactions || this.transactions.length === 0) {
+      // Filtre actif ne retournant aucune transaction : reinitialiser plutot
+      // que de garder les valeurs du filtre precedent.
+      this.comparisonData = [];
+      this.detailedComparison = [];
+      this.maxValue = 0;
+      this.totalValue = 0;
+      this.bestPerformer = '';
+      this.worstPerformer = '';
+      this.variance = 0;
+      this.varianceInterpretation = '';
       return;
     }
 

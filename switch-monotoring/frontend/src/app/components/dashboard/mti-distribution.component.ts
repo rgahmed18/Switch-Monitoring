@@ -102,12 +102,20 @@ export class MtiDistributionComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['transactions'] && this.transactions?.length) {
+    if (changes['transactions']) {
       this.analyzeMti();
     }
   }
 
   analyzeMti() {
+    // Filtre actif ne retournant aucune transaction : reinitialiser plutot
+    // que de garder les valeurs du filtre precedent.
+    if (!this.transactions?.length) {
+      this.mtiDetails = [];
+      this.chartData = null;
+      return;
+    }
+
     // Grouper par MTI
     const mtiData = new Map();
     const total = this.transactions.length;

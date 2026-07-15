@@ -90,6 +90,41 @@ class AuthControllerTest {
         .andExpect(jsonPath("$.error").exists());
   }
 
+  // ── GET /me ───────────────────────────────────────────────────────────────
+
+  @Test
+  void me_devrait_retourner_401_sans_header_X_User_Email() throws Exception {
+    mockMvc.perform(get("/api/v1/auth/me"))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void me_devrait_retourner_404_si_utilisateur_introuvable() throws Exception {
+    when(userService.findByEmail("inconnu@hps.ma")).thenReturn(Optional.empty());
+
+    mockMvc.perform(get("/api/v1/auth/me").header("X-User-Email", "inconnu@hps.ma"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void me_devrait_retourner_les_donnees_a_jour_pour_un_non_admin() throws Exception {
+    AppUserEntity user = new AppUserEntity();
+    user.setId(2L);
+    user.setUsername("amine.icame");
+    user.setEmail("amine.icame16@gmail.com");
+    user.setRole("USER");
+    user.setStatus("ACTIVE");
+    user.setProjects("SGM");
+
+    when(userService.findByEmail("amine.icame16@gmail.com")).thenReturn(Optional.of(user));
+
+    mockMvc.perform(get("/api/v1/auth/me").header("X-User-Email", "amine.icame16@gmail.com"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.email").value("amine.icame16@gmail.com"))
+        .andExpect(jsonPath("$.role").value("USER"))
+        .andExpect(jsonPath("$.projects").value("SGM"));
+  }
+
   // ── GET /token-info/{token} ──────────────────────────────────────────────
 
   @Test

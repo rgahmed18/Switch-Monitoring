@@ -57,20 +57,10 @@ import { Transaction } from '../../models';
         </div>
         <div class="flex items-center gap-2 flex-wrap shrink-0">
           <div class="flex items-center gap-2 flex-wrap" *ngIf="analyticsDashboard">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
-                         bg-green-500/10 border border-green-500/30 text-green-500">
-              {{ 'analysis.emv' | translate }}: {{ analyticsDashboard.chipTransactionCount || 0 }}
-            </span>
             <span *ngIf="analyticsDashboard.fraudActionCodeCount > 0"
                   class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
                          bg-red-500/10 border border-red-500/30 text-red-400">
               {{ 'analysis.fraud' | translate }}: {{ analyticsDashboard.fraudActionCodeCount }}
-            </span>
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
-                  [ngClass]="slaBreachCount > 0
-                    ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
-                    : 'bg-sky-500/10 border border-sky-500/30 text-sky-400'">
-              SLA: {{ slaBreachCount }} {{ 'analysis.slaBreaches' | translate }}
             </span>
           </div>
           <button (click)="exportAnalysis()"
@@ -93,7 +83,8 @@ import { Transaction } from '../../models';
       <div class="bg-card rounded-xl border border-border/40 p-5">
         <app-advanced-filters
           (onFiltersChange)="onFiltersChange($event)"
-          [transactions]="transactions">
+          [transactions]="transactions"
+          [filteredTransactions]="filteredTransactions">
         </app-advanced-filters>
       </div>
 

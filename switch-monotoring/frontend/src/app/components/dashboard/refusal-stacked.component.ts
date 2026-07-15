@@ -29,8 +29,8 @@ export class RefusalStackedComponent implements OnChanges {
   public chartData: ChartConfiguration['data'] = {
     labels: [],
     datasets: [
-      { label: 'Approuvees', data: [], backgroundColor: '#22c55e', stack: 'a' },
-      { label: 'Refusees',   data: [], backgroundColor: '#ef4444', stack: 'a' },
+      { label: 'Approuvées', data: [], backgroundColor: '#22c55e', stack: 'a' },
+      { label: 'Refusées',   data: [], backgroundColor: '#ef4444', stack: 'a' },
     ]
   };
 
@@ -79,8 +79,8 @@ export class RefusalStackedComponent implements OnChanges {
   constructor() {
     effect(() => {
       const lang = this.appState.lang();
-      (this.chartData.datasets[0] as any).label = lang === 'fr' ? 'Approuvees' : 'Approved';
-      (this.chartData.datasets[1] as any).label = lang === 'fr' ? 'Refusees'   : 'Declined';
+      (this.chartData.datasets[0] as any).label = lang === 'fr' ? 'Approuvées' : 'Approved';
+      (this.chartData.datasets[1] as any).label = lang === 'fr' ? 'Refusées'   : 'Declined';
       this.chartData = { ...this.chartData };
     });
   }
@@ -93,8 +93,8 @@ export class RefusalStackedComponent implements OnChanges {
 
   private updateChart(): void {
     const lang          = this.appState.lang();
-    const labelApproved = lang === 'fr' ? 'Approuvees' : 'Approved';
-    const labelDeclined = lang === 'fr' ? 'Refusees'   : 'Declined';
+    const labelApproved = lang === 'fr' ? 'Approuvées' : 'Approved';
+    const labelDeclined = lang === 'fr' ? 'Refusées'   : 'Declined';
     const MAX_BARS      = 30;
     const BUCKET_MS     = 60_000;
 

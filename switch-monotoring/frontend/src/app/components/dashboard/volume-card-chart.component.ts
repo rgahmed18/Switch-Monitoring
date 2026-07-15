@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Transaction } from '../../models';
+import { resolveCardNetwork } from '../../data/card-network';
 
 @Component({
   selector: 'app-volume-card-chart',
@@ -66,14 +67,10 @@ export class VolumeCardChartComponent implements OnChanges {
     );
 
     eligible.forEach(tx => {
-      const nc  = (tx.networkCode || '').toString().trim();
-      const nid = (tx.networkId   || '').toString().trim().toUpperCase();
-      const bin = (tx.cardNumberMasked || tx.cardNumber || '').toString().charAt(0);
-      const isVisa       = nc === '01' || nid.startsWith('VI') || bin === '4';
-      const isMastercard = nc === '02' || nid.startsWith('MC') || nid.startsWith('MA') || bin === '5' || bin === '2';
-      if (isVisa && !isMastercard) visa++;
-      else if (isMastercard)       mastercard++;
-      else                         autres++;
+      const network = resolveCardNetwork(tx);
+      if (network === 'visa')            visa++;
+      else if (network === 'mastercard') mastercard++;
+      else                                autres++;
     });
 
     this.chartData.datasets[0].data = [visa, mastercard, autres];

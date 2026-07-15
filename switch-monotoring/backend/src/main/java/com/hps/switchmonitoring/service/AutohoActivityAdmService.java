@@ -249,6 +249,7 @@ public class AutohoActivityAdmService {
     entity.setCardAcceptorTermId(request.getCardAcceptorTermId());
     entity.setCardAccNameAddress(request.getCardAccNameAddress());
     entity.setPosConditionCode(request.getPosConditionCode());
+    entity.setPosEntryMode(request.getPosEntryMode());
     entity.setNetworkCode(request.getNetworkCode());
     entity.setNetworkId(request.getNetworkId());
     entity.setProductCode(request.getProductCode());

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Transaction } from '../../models';
+import { resolveCardNetwork } from '../../data/card-network';
 
 @Component({
   selector: 'app-approved-by-subtype',
@@ -85,22 +86,7 @@ export class ApprovedBySubtypeComponent implements OnChanges {
   }
 
   private resolveNetwork(tx: Transaction): 'visa' | 'mastercard' | 'other' {
-    const nc  = ((tx as any).networkCode  || '').toString().trim();
-    const nid = ((tx as any).networkId    || '').toString().trim().toUpperCase();
-    const pc  = ((tx as any).productCode  || '').toString().trim().toUpperCase();
-    const bin = ((tx as any).cardNumberMasked || (tx as any).cardNumber || '').toString().charAt(0);
-
-    // Visa : productCode VIS/VISA, networkCode 01, networkId VI*, BIN 4
-    if (pc === 'VIS' || pc === 'VISA' || nc === '01' || nid.startsWith('VI') || bin === '4') {
-      return 'visa';
-    }
-    // Mastercard : productCode MSC/MC/MAS, networkCode 02, networkId MC*/MA*, BIN 5/2
-    if (pc === 'MSC' || pc === 'MC' || pc === 'MAS' || nc === '02'
-        || nid.startsWith('MC') || nid.startsWith('MA') || bin === '5' || bin === '2') {
-      return 'mastercard';
-    }
-    // Tout le reste (CMI/GAB, réseau inconnu…) → Autre
-    return 'other';
+    return resolveCardNetwork(tx);
   }
 
   private updateChart(): void {

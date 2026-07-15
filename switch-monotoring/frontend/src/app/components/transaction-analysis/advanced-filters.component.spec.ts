@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { AdvancedFiltersComponent } from './advanced-filters.component';
 
 describe('AdvancedFiltersComponent', () => {
@@ -64,6 +64,62 @@ describe('AdvancedFiltersComponent', () => {
       component.ngOnInit();
 
       expect(component.approvalRate).toBe(0);
+    });
+
+    it('devrait calculer les stats sur filteredTransactions si fourni, pas sur le total brut', () => {
+      // Bug reel corrige : les stats rapides restaient figees sur le total
+      // brut quel que soit le filtre applique par l'utilisateur, car le
+      // composant recevait toujours les transactions non filtrees.
+      component.transactions = [
+        { status: 'APPROVED' }, { status: 'APPROVED' }, { status: 'DECLINED' }, { status: 'DECLINED' },
+      ];
+      component.filteredTransactions = [{ status: 'APPROVED' }];
+
+      component.ngOnInit();
+
+      expect(component.approvedCount).toBe(1);
+      expect(component.declinedCount).toBe(0);
+      expect(component.approvalRate).toBe(100);
+    });
+
+    it('devrait retomber sur transactions si filteredTransactions n\'est pas fourni', () => {
+      component.transactions = [{ status: 'APPROVED' }, { status: 'DECLINED' }];
+      component.filteredTransactions = null;
+
+      component.ngOnInit();
+
+      expect(component.approvedCount).toBe(1);
+      expect(component.declinedCount).toBe(1);
+    });
+
+    it('devrait recalculer les stats quand filteredTransactions change (ngOnChanges)', () => {
+      component.transactions = [
+        { status: 'APPROVED' }, { status: 'APPROVED' }, { status: 'DECLINED' },
+      ];
+      component.filteredTransactions = component.transactions;
+      component.ngOnInit();
+      expect(component.approvedCount).toBe(2);
+
+      component.filteredTransactions = [{ status: 'DECLINED' }];
+      component.ngOnChanges();
+
+      expect(component.approvedCount).toBe(0);
+      expect(component.declinedCount).toBe(1);
+    });
+  });
+
+  describe('extractUniqueValues avec filteredTransactions', () => {
+    it('la liste des acquereurs doit rester basee sur le total BRUT, pas sur le resultat filtre', () => {
+      // Sinon, une fois un premier filtre applique, l'utilisateur ne pourrait
+      // plus choisir un acquereur absent du sous-ensemble deja filtre.
+      component.transactions = [
+        { acquirerBank: 'AWB' }, { acquirerBank: 'BNP' },
+      ];
+      component.filteredTransactions = [{ acquirerBank: 'AWB' }];
+
+      component.ngOnInit();
+
+      expect(component.uniqueAcquirers).toEqual(['AWB', 'BNP']);
     });
   });
 
@@ -163,5 +219,39 @@ describe('AdvancedFiltersComponent', () => {
 
       expect(component.maxPct).toBe(100);
     });
+  });
+});
+
+describe('AdvancedFiltersComponent — affichage du Total dans le template (rendu reel)', () => {
+  // Bug reel corrige : le template affichait toujours {{ transactions?.length }}
+  // (le total BRUT) au lieu de suivre filteredTransactions, donc le stat
+  // "Total" restait fige quel que soit le filtre applique (montant, statut...),
+  // meme apres la premiere correction qui n'avait repare que calculateStats().
+  // Describe top-level separe : le describe principal instancie deja un TestBed
+  // "vide" via runInInjectionContext, incompatible avec TestBed.createComponent
+  // (necessite le module de test standalone configure des le depart).
+  let fixture: ComponentFixture<AdvancedFiltersComponent>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [AdvancedFiltersComponent] });
+    fixture = TestBed.createComponent(AdvancedFiltersComponent);
+  });
+
+  it('devrait afficher filteredTransactions.length, pas transactions.length', () => {
+    fixture.componentInstance.transactions = [{ status: 'APPROVED' }, { status: 'APPROVED' }, { status: 'DECLINED' }];
+    fixture.componentInstance.filteredTransactions = [{ status: 'APPROVED' }];
+    fixture.detectChanges();
+
+    const totalEl = fixture.nativeElement.querySelector('.af-stat-value');
+    expect(totalEl.textContent.trim()).toBe('1');
+  });
+
+  it('devrait retomber sur transactions.length si filteredTransactions est null', () => {
+    fixture.componentInstance.transactions = [{ status: 'APPROVED' }, { status: 'DECLINED' }];
+    fixture.componentInstance.filteredTransactions = null;
+    fixture.detectChanges();
+
+    const totalEl = fixture.nativeElement.querySelector('.af-stat-value');
+    expect(totalEl.textContent.trim()).toBe('2');
   });
 });

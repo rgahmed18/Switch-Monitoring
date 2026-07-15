@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, firstValueFrom } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AppUser, LoginCredentials } from '../models';
 import { ProjectFilterService } from './project-filter.service';
@@ -83,6 +83,24 @@ export class AuthService implements OnDestroy {
     if (!user) return;
     const updated: AppUser = { ...user, mustChangePassword: false };
     this.persistSession(updated);
+  }
+
+  /**
+   * Recharge les donnees de l'utilisateur courant depuis le backend (GET /auth/me),
+   * notamment ses projets assignes. Accessible a tout role (contrairement a
+   * /admin/users) : utile pour qu'un utilisateur non-admin voie immediatement
+   * une reassignation de projets faite par un administrateur, sans se
+   * reconnecter.
+   */
+  async refreshCurrentUser(): Promise<void> {
+    const current = this._currentUser();
+    if (!current) return;
+    try {
+      const fresh = await firstValueFrom(this.http.get<AppUser>(`${API_BASE}/auth/me`));
+      this.persistSession(fresh);
+    } catch {
+      // Silencieux : on garde les donnees de session existantes en cas d'erreur reseau.
+    }
   }
 
   private persistSession(user: AppUser): void {

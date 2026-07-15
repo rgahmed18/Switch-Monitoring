@@ -210,7 +210,7 @@ import { TransactionStatsService } from '../../services/transaction-stats.servic
       <div class="af-stats">
         <div class="af-stat">
           <span class="af-stat-label">Total</span>
-          <span class="af-stat-value">{{ transactions?.length || 0 }}</span>
+          <span class="af-stat-value">{{ (filteredTransactions ?? transactions)?.length || 0 }}</span>
         </div>
         <div class="af-stat-divider"></div>
         <div class="af-stat">
@@ -656,7 +656,14 @@ import { TransactionStatsService } from '../../services/transaction-stats.servic
   `]
 })
 export class AdvancedFiltersComponent implements OnInit, OnChanges {
+  // Jeu de donnees COMPLET (non filtre) : sert uniquement a peupler la liste
+  // des acquereurs et la borne max du slider de montant, pour que l'utilisateur
+  // puisse toujours choisir un filtre meme apres en avoir deja applique un autre.
   @Input() transactions: any[] = [];
+  // Resultat du filtrage applique par le parent : sert de base aux 5 statistiques
+  // rapides affichees (Total/Approuvees/Refusees/Volume/Taux). Sans cet input,
+  // ces stats resteraient figees sur le total non filtre quel que soit le filtre.
+  @Input() filteredTransactions: any[] | null = null;
   @Output() onFiltersChange = new EventEmitter<any>();
 
   private readonly statsService = inject(TransactionStatsService);
@@ -735,7 +742,11 @@ export class AdvancedFiltersComponent implements OnInit, OnChanges {
   }
 
   calculateStats() {
-    const s = this.statsService.compute(this.transactions || []);
+    // Les stats rapides refletent le resultat FILTRE (si fourni par le parent),
+    // pas le total brut, sinon elles resteraient toujours identiques quel que
+    // soit le filtre applique par l'utilisateur.
+    const source = this.filteredTransactions ?? this.transactions ?? [];
+    const s = this.statsService.compute(source);
     this.approvedCount = s.approved;
     this.declinedCount = s.declined;
     this.totalAmount   = s.totalVolume;

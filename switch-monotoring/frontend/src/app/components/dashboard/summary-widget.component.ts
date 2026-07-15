@@ -172,13 +172,16 @@ export class SummaryWidgetComponent implements OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['transactions'] && this.transactions.length) {
+    if (changes['transactions']) {
       this.calculateStats();
     }
   }
 
   private calculateStats(): void {
     const s = this.statsService.compute(this.transactions);
+    // s est deja sur a gerer un tableau vide (voir transaction-stats.service.ts),
+    // mais on s'assure explicitement que le widget reflete bien l'etat vide
+    // plutot que de garder les valeurs du filtre precedent.
 
     this.approvedCount = s.approved;
     this.declinedCount = s.declined;

@@ -86,8 +86,12 @@ export class SlaTrackingComponent implements OnChanges {
       this.slaThresholds = this.defaultThresholds;
     }
     if (this.transactions.length > 0) {
+      // Coherent avec TransactionStatsService (source unique de verite) : seul
+      // APPROVED compte comme succes ; PENDING est un statut a part, ni succes
+      // ni echec, pour eviter que ce widget affiche un taux different des
+      // autres composants du dashboard pour le meme jeu de donnees.
       const successfulTx = this.transactions.filter(
-        tx => tx.status === 'APPROVED' || tx.status === 'PENDING'
+        tx => tx.status === 'APPROVED'
       ).length;
       this.successRate = (successfulTx / this.transactions.length) * 100;
 

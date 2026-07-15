@@ -19,6 +19,7 @@ import { AppStateService } from '../../state.service';
 import { Transaction, AlertEvent } from '../../models';
 import { TransactionAlertService } from '../../services/transaction-alert.service';
 import { TransactionStatsService } from '../../services/transaction-stats.service';
+import { resolveCardNetwork } from '../../data/card-network';
 
 @Component({
   selector: 'app-dashboard',
@@ -923,7 +924,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ];
   readonly codeGroupeOptions = [
     { value: 'SUCCES',    label: 'Succès (000)' },
-    { value: 'FRAUDE',    label: 'Fraude (102, 105...)' },
     { value: 'TIMEOUT',   label: 'Timeout / Réseau (906...)' },
     { value: 'PROVISION', label: 'Provision insuffisante (051)' },
     { value: 'REFUS',     label: 'Autres refus' },
@@ -1319,12 +1319,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       {
         id: 1, externalId: 'TXN1', timestamp: new Date().toISOString(), mtiCode: '0100',
         amount: 150, currency: 'EUR', responseCode: '00', status: 'SUCCESS',
-        latencyMs: 385, channel: 'ATM', zone: 'Paris'
+        latencyMs: 385, channel: 'ATM', zone: 'International'
       } as any,
       {
         id: 2, externalId: 'TXN2', timestamp: new Date().toISOString(), mtiCode: '0100',
         amount: 250, currency: 'EUR', responseCode: '05', status: 'TIMEOUT',
-        latencyMs: 652, channel: 'POS', zone: 'Lyon'
+        latencyMs: 652, channel: 'POS', zone: 'International'
       } as any
     ];
   }
@@ -1386,26 +1386,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const isDeclined = tx.status === 'DECLINED'
         || (rc && rc !== '00' && rc !== '000' && tx.status !== 'APPROVED');
 
-      const nc  = (tx.networkCode   || '').toString().trim();
-      const nid = (tx.networkId     || '').toString().trim().toUpperCase();
-      const pc  = (tx.productCode   || '').toString().trim().toUpperCase();
-      const bin = (tx.cardNumberMasked || tx.cardNumber || '').toString().charAt(0);
-
-      const isVisa = nc === '01'
-        || pc === 'VIS' || pc === 'VISA'
-        || nid.startsWith('VI')
-        || (bin === '4' && nc !== '02' && pc !== 'MSC' && pc !== 'MC' && pc !== 'MAS' && pc !== 'CMI' && !nid.startsWith('MC') && !nid.startsWith('MA') && !nid.startsWith('CMI'));
-
-      const isMastercard = !isVisa && (
-        nc === '02'
-        || pc === 'MSC' || pc === 'MC' || pc === 'MAS'
-        || nid.startsWith('MC') || nid.startsWith('MA')
-        || (bin === '5' || bin === '2')
-      );
-
-      if (isVisa) {
+      const network = resolveCardNetwork(tx);
+      if (network === 'visa') {
         vp++; if (isDeclined) vr++;
-      } else if (isMastercard) {
+      } else if (network === 'mastercard') {
         mp++; if (isDeclined) mr++;
       }
     });
@@ -1491,7 +1475,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private updateKpis() {
-    if (this.transactions.length === 0) return;
+    if (this.transactions.length === 0) {
+      // Filtre actif ne retournant aucune transaction : les KPIs doivent
+      // refleter cet etat vide, pas garder les valeurs du filtre precedent.
+      this.avgLatency  = 0;
+      this.successRate = 0;
+      this.tps         = 0;
+      this.uptime      = 0;
+      return;
+    }
 
     const s = this.statsService.compute(this.transactions);
 

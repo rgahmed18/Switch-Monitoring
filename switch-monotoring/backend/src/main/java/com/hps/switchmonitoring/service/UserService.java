@@ -197,6 +197,10 @@ public class UserService {
         return userRepo.findAll();
     }
 
+    public Optional<AppUserEntity> findByEmail(String email) {
+        return userRepo.findByEmail(email.trim().toLowerCase());
+    }
+
     // ── Actions admin sur les utilisateurs ────────────────────────────────────
 
     @Transactional

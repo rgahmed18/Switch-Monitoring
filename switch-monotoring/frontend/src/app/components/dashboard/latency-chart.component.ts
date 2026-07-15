@@ -135,7 +135,15 @@ export class LatencyChartComponent implements OnChanges {
     const BUCKET_MS = 60_000;
     const MAX_BARS  = 30;
 
-    if (!this.transactions.length) return;
+    if (!this.transactions.length) {
+      // Filtre actif ne retournant aucune transaction : vider le graphique
+      // plutot que de garder les anciennes barres affichees.
+      this.chartData.labels = [];
+      this.chartData.datasets[0].data = [];
+      this.chartData.datasets[1].data = [];
+      this.chartData = { ...this.chartData };
+      return;
+    }
 
     // Grouper par minute — meme logique que refusal-stacked et refusal-rate
     const bucketMap = new Map<number, { sumLatency: number; count: number }>();

@@ -85,6 +85,7 @@ public class CreateAuthoActivityAdmRequest {
   private String cardAcceptorTermId;
   private String cardAccNameAddress;
   private String posConditionCode;
+  private String posEntryMode;
 
   // Réseau
   private String networkCode;

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { Transaction } from '../../models';
+import { resolveCardNetwork } from '../../data/card-network';
 
 @Component({
   selector: 'app-refusal-by-subtype',
@@ -84,19 +85,7 @@ export class RefusalBySubtypeComponent implements OnChanges {
   }
 
   private resolveNetwork(tx: Transaction): 'visa' | 'mastercard' | 'other' {
-    const nc  = ((tx as any).networkCode  || '').toString().trim();
-    const nid = ((tx as any).networkId    || '').toString().trim().toUpperCase();
-    const pc  = ((tx as any).productCode  || '').toString().trim().toUpperCase();
-    const bin = ((tx as any).cardNumberMasked || (tx as any).cardNumber || '').toString().charAt(0);
-
-    if (pc === 'VIS' || pc === 'VISA' || nc === '01' || nid.startsWith('VI') || bin === '4') {
-      return 'visa';
-    }
-    if (pc === 'MSC' || pc === 'MC' || pc === 'MAS' || nc === '02'
-        || nid.startsWith('MC') || nid.startsWith('MA') || bin === '5' || bin === '2') {
-      return 'mastercard';
-    }
-    return 'other';
+    return resolveCardNetwork(tx);
   }
 
   private updateChart() {

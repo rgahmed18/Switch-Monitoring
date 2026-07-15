@@ -58,7 +58,15 @@ export class ResponseChartComponent implements OnChanges {
   }
 
   private updateChart() {
-    if (!this.transactions.length) return;
+    if (!this.transactions.length) {
+      // Filtre actif ne retournant aucune transaction : vider le graphique
+      // plutot que de garder les anciennes donnees affichees.
+      this.doughnutChartData.labels = [];
+      this.doughnutChartData.datasets[0].data = [];
+      (this.doughnutChartData.datasets[0] as any).backgroundColor = [];
+      this.doughnutChartData = { ...this.doughnutChartData };
+      return;
+    }
 
     const counts = new Map<string, number>();
     this.transactions.forEach(tx => {
