@@ -7,6 +7,13 @@ import com.hps.switchmonitoring.service.emv.ChipAnalysisService;
 import com.hps.switchmonitoring.service.iso.ActionCodeDecoder;
 import com.hps.switchmonitoring.service.iso.Iso8583Decoder;
 import com.hps.switchmonitoring.service.time.TransactionTimeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +36,8 @@ import java.util.NoSuchElementException;
  */
 @RestController
 @RequestMapping("/api/v1/analytics")
+@Tag(name = "Analytique Monetique", description = "Diagnostic EMV, analyse temporelle, reconciliation multi-devise et decodage ISO 8583 avances")
+@SecurityRequirements // lecture ouverte a tout utilisateur authentifie cote frontend
 public class MonetixAnalyticsController {
 
     private final AutohoActivityAdmRepository  repository;
@@ -51,24 +60,44 @@ public class MonetixAnalyticsController {
     // ANALYSE EMV / CHIP
     // ═══════════════════════════════════════════════════════════════════════════
 
-    /**
-     * GET /api/v1/analytics/chip/{transactionId}
-     * Diagnostic EMV complet : TVR, AIP, CVM, ATC, ARPC, CVV
-     */
+    @Operation(
+        summary = "Diagnostic EMV complet d'une transaction",
+        description = """
+            Decode et analyse les donnees EMV (puce) d'une transaction : TVR (Terminal Verification Results), \
+            AIP (Application Interchange Profile), methode CVM (Cardholder Verification Method), compteur ATC \
+            (Application Transaction Counter), cryptogramme ARPC et resultat CVV. Retourne un niveau de risque \
+            global (`overallRisk`) et des recommandations.""")
+    @ApiResponse(responseCode = "200", description = "Diagnostic EMV de la transaction.")
+    @ApiResponse(responseCode = "404", description = "Transaction introuvable pour cet identifiant.")
     @GetMapping("/chip/{transactionId}")
     public ResponseEntity<ChipAnalysisService.ChipDiagnostic> getChipAnalysis(
+            @Parameter(description = "Identifiant technique de la transaction", example = "TXN20260715112233")
             @PathVariable String transactionId) {
         AutohoActivityAdmEntity entity = findByTransactionId(transactionId);
         return ResponseEntity.ok(chipService.analyze(entity));
     }
 
-    /**
-     * GET /api/v1/analytics/chip/batch/high-risk?page=0&size=20
-     * Transactions chip à risque élevé (TVR non clean)
-     */
+    @Operation(
+        summary = "Lister les transactions puce a risque eleve (lot pagine)",
+        description = """
+            Parcourt les transactions EMV (paginees) et ne retourne que celles dont le diagnostic TVR \
+            n'est pas `CLEAN` (au moins un indicateur de risque actif). Utile pour une revue de securite \
+            ciblee sans avoir a diagnostiquer transaction par transaction.""")
+    @ApiResponse(responseCode = "200", description = "Transactions a risque (peut etre vide si aucune anomalie sur la page demandee).",
+        content = @Content(examples = @ExampleObject(value = """
+            [{
+              "transactionId": "TXN20260715112233", "referenceNumber": "251960123456",
+              "businessDate": "2026-07-15", "cardNumberMasked": "**** **** **** 1234",
+              "transactionAmount": 1250.00, "transactionCurrency": "MAD",
+              "overallRisk": "HIGH", "tvrRiskScore": 78, "tvrRiskLevel": "ELEVE",
+              "activeFlags": ["OFFLINE_PIN_FAILED"], "criticalFlags": ["CARD_NOT_SUPPORTED"],
+              "recommendations": ["Verifier le terminal", "Contacter le porteur"]
+            }]""")))
     @GetMapping("/chip/batch/high-risk")
     public ResponseEntity<List<Map<String, Object>>> getHighRiskChipTransactions(
+            @Parameter(description = "Numero de page (0-index)", example = "0")
             @RequestParam(defaultValue = "0")  int page,
+            @Parameter(description = "Taille de la page", example = "20")
             @RequestParam(defaultValue = "20") int size) {
 
         List<AutohoActivityAdmEntity> entities =
@@ -103,36 +132,51 @@ public class MonetixAnalyticsController {
     // ANALYSE TEMPORELLE
     // ═══════════════════════════════════════════════════════════════════════════
 
-    /**
-     * GET /api/v1/analytics/time/{transactionId}
-     * Analyse temporelle : timezone, latence, drift local vs. central
-     */
+    @Operation(
+        summary = "Analyse temporelle d'une transaction",
+        description = """
+            Calcule le temps de traitement (transmission -> reponse), detecte un eventuel decalage \
+            (drift) entre l'heure locale du terminal et l'heure centrale du switch, et resout le fuseau \
+            horaire local a partir du code pays. Indique si le SLA de traitement (5 secondes) est respecte.""")
+    @ApiResponse(responseCode = "200", description = "Analyse temporelle de la transaction.")
+    @ApiResponse(responseCode = "404", description = "Transaction introuvable pour cet identifiant.")
     @GetMapping("/time/{transactionId}")
     public ResponseEntity<TransactionTimeService.TimeAnalysis> getTimeAnalysis(
+            @Parameter(description = "Identifiant technique de la transaction", example = "TXN20260715112233")
             @PathVariable String transactionId) {
         AutohoActivityAdmEntity entity = findByTransactionId(transactionId);
         return ResponseEntity.ok(timeService.analyze(entity));
     }
 
-    /**
-     * GET /api/v1/analytics/time/timezone/{countryCode}
-     * Résoudre la timezone pour un code pays ISO 3166 numérique
-     */
+    @Operation(summary = "Resoudre le fuseau horaire d'un code pays",
+        description = "Convertit un code pays ISO 3166 numerique (DE 19) en identifiant de fuseau horaire IANA (ex: `504` -> `Africa/Casablanca`).")
+    @ApiResponse(responseCode = "200", description = "Fuseau horaire resolu.",
+        content = @Content(examples = @ExampleObject(value = "{\"countryCode\": \"504\", \"timezone\": \"Africa/Casablanca\"}")))
     @GetMapping("/time/timezone/{countryCode}")
-    public ResponseEntity<Map<String, String>> getTimezone(@PathVariable String countryCode) {
+    public ResponseEntity<Map<String, String>> getTimezone(
+            @Parameter(description = "Code pays ISO 3166 numerique", example = "504") @PathVariable String countryCode) {
         return ResponseEntity.ok(Map.of(
             "countryCode", countryCode,
             "timezone",    timeService.resolveTimezone(countryCode)
         ));
     }
 
-    /**
-     * GET /api/v1/analytics/time/sla-breaches?businessDate=2026-04-22
-     * Transactions avec SLA de traitement dépassé (> 5s)
-     */
+    @Operation(
+        summary = "Lister les transactions ayant depasse le SLA de traitement",
+        description = "Retourne, pour une date metier donnee, les transactions dont le temps de traitement depasse le seuil SLA (5 secondes).")
+    @ApiResponse(responseCode = "200", description = "Transactions en depassement SLA (peut etre vide).",
+        content = @Content(examples = @ExampleObject(value = """
+            [{
+              "transactionId": "TXN20260715112233", "referenceNumber": "251960123456",
+              "processingTimeMs": 7350, "processingLabel": "Lent", "timingAnomaly": "DRIFT_DETECTED",
+              "slaStatus": "BREACHED", "localTimezone": "Africa/Casablanca",
+              "transmissionUtc": "2026-07-15T10:22:33Z", "responseTime": "2026-07-15T10:22:40Z"
+            }]""")))
     @GetMapping("/time/sla-breaches")
     public ResponseEntity<List<Map<String, Object>>> getSlaBreaches(
+            @Parameter(description = "Date metier", example = "2026-07-15")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate businessDate,
+            @Parameter(description = "Nombre maximum de transactions a analyser", example = "50")
             @RequestParam(defaultValue = "50") int size) {
 
         List<AutohoActivityAdmEntity> entities =
@@ -164,23 +208,38 @@ public class MonetixAnalyticsController {
     // ANALYSE MULTI-DEVISE
     // ═══════════════════════════════════════════════════════════════════════════
 
-    /**
-     * GET /api/v1/analytics/currency/{transactionId}
-     * Analyse complète des 3 couches de devises
-     */
+    @Operation(
+        summary = "Analyse multi-devise complete d'une transaction",
+        description = """
+            Analyse les 3 couches de devises d'une transaction ISO 8583 (devise de transaction, devise de \
+            facturation issuer, devise de facturation acquirer), calcule le type de change (FX) applique, \
+            l'ecart entre taux applique et taux du marche, et le statut de reglement (settlement) cote \
+            emetteur/acquereur.""")
+    @ApiResponse(responseCode = "200", description = "Analyse multi-devise de la transaction.")
+    @ApiResponse(responseCode = "404", description = "Transaction introuvable pour cet identifiant.")
     @GetMapping("/currency/{transactionId}")
     public ResponseEntity<CurrencyIntelligenceService.CurrencyAnalysis> getCurrencyAnalysis(
+            @Parameter(description = "Identifiant technique de la transaction", example = "TXN20260715112233")
             @PathVariable String transactionId) {
         AutohoActivityAdmEntity entity = findByTransactionId(transactionId);
         return ResponseEntity.ok(currencyService.analyze(entity));
     }
 
-    /**
-     * GET /api/v1/analytics/currency/settlement-pending?businessDate=2026-04-22
-     * Transactions approuvées avec settlement en attente
-     */
+    @Operation(
+        summary = "Lister les transactions approuvees en attente de reglement (settlement)",
+        description = "Retourne, pour une date metier donnee, les transactions approuvees dont le reglement (settlement) issuer et/ou acquirer n'est pas encore finalise.")
+    @ApiResponse(responseCode = "200", description = "Transactions en attente de reglement.",
+        content = @Content(examples = @ExampleObject(value = """
+            [{
+              "transactionId": "TXN20260715112233", "referenceNumber": "251960123456",
+              "businessDate": "2026-07-15", "transactionAmount": 1250.00, "transactionCurrency": "MAD",
+              "billingAmount": 1250.00, "billingCurrency": "MAD", "fxType": "NO_CONVERSION",
+              "settlementStatus": "PENDING", "issDelayDays": 2, "acqDelayDays": 1,
+              "slaBreached": false, "anomalies": []
+            }]""")))
     @GetMapping("/currency/settlement-pending")
     public ResponseEntity<List<Map<String, Object>>> getPendingSettlements(
+            @Parameter(description = "Date metier", example = "2026-07-15")
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate businessDate) {
 
         List<AutohoActivityAdmEntity> entities =
@@ -208,12 +267,21 @@ public class MonetixAnalyticsController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * GET /api/v1/analytics/currency/fx-anomalies?days=7
-     * Transactions avec variance de taux de change > 1%
-     */
+    @Operation(
+        summary = "Lister les anomalies de taux de change (FX)",
+        description = "Retourne, sur les `days` derniers jours, les transactions multi-devises dont l'ecart entre le taux applique et le taux de marche calcule depasse le seuil d'anomalie (> 1%).")
+    @ApiResponse(responseCode = "200", description = "Transactions avec anomalie de taux de change (peut etre vide).",
+        content = @Content(examples = @ExampleObject(value = """
+            [{
+              "transactionId": "TXN20260715112233", "referenceNumber": "251960123456",
+              "businessDate": "2026-07-15", "txAmount": 100.00, "txCurrency": "EUR",
+              "billingAmount": 1082.50, "billingCurrency": "MAD",
+              "appliedRate": 10.825, "computedRate": 10.60, "variancePct": 2.1,
+              "assessment": "Ecart superieur au seuil tolere"
+            }]""")))
     @GetMapping("/currency/fx-anomalies")
     public ResponseEntity<List<Map<String, Object>>> getFxAnomalies(
+            @Parameter(description = "Fenetre d'analyse en nombre de jours precedant aujourd'hui", example = "7")
             @RequestParam(defaultValue = "7") int days) {
 
         LocalDate from = LocalDate.now().minusDays(days);
@@ -248,31 +316,45 @@ public class MonetixAnalyticsController {
     // DÉCODAGE ISO 8583
     // ═══════════════════════════════════════════════════════════════════════════
 
-    /**
-     * GET /api/v1/analytics/iso/action-code/{code}
-     * Décoder un action_code ISO 8583
-     */
+    @Operation(summary = "Decoder un action code ISO 8583",
+        description = "Traduit un action code brut (issu du switch PowerCARD) en libelle metier, et indique s'il s'agit d'un code suspect de fraude ou d'erreur systeme.")
+    @ApiResponse(responseCode = "200", description = "Action code decode.")
     @GetMapping("/iso/action-code/{code}")
     public ResponseEntity<ActionCodeDecoder.ActionDecoded> decodeActionCode(
-            @PathVariable String code) {
+            @Parameter(description = "Action code brut", example = "00") @PathVariable String code) {
         return ResponseEntity.ok(ActionCodeDecoder.decode(code));
     }
 
-    /**
-     * GET /api/v1/analytics/iso/mti/{mti}
-     * Décoder un MTI (message_type)
-     */
+    @Operation(summary = "Decoder un MTI (Message Type Indicator) ISO 8583",
+        description = "Traduit un MTI a 4 chiffres (ex: `0200`) en classe de message (demande/reponse), origine et fonction (autorisation, financiere, reversal, notification...).")
+    @ApiResponse(responseCode = "200", description = "MTI decode.")
     @GetMapping("/iso/mti/{mti}")
-    public ResponseEntity<Iso8583Decoder.MtiDecoded> decodeMti(@PathVariable String mti) {
+    public ResponseEntity<Iso8583Decoder.MtiDecoded> decodeMti(
+            @Parameter(description = "MTI ISO 8583 a 4 chiffres", example = "0200") @PathVariable String mti) {
         return ResponseEntity.ok(Iso8583Decoder.decodeMti(mti));
     }
 
-    /**
-     * GET /api/v1/analytics/iso/transaction/{transactionId}
-     * Décodage ISO 8583 complet d'une transaction
-     */
+    @Operation(
+        summary = "Decodage ISO 8583 complet d'une transaction",
+        description = """
+            Decode l'ensemble des champs ISO 8583 d'une transaction existante : MTI, action code, action code \
+            emetteur, processing code (DE 3, avec comptes source/destination) et function code. Signale \
+            egalement si la transaction est suspecte de fraude ou correspond a une erreur systeme.""")
+    @ApiResponse(responseCode = "200", description = "Decodage ISO 8583 complet.",
+        content = @Content(examples = @ExampleObject(value = """
+            {
+              "transactionId": "TXN20260715112233", "referenceNumber": "251960123456",
+              "mti": {"code": "0200", "class": "Demande financiere", "origin": "Acquereur"},
+              "actionCode": {"code": "00", "label": "Approuvee"},
+              "issuerActionCode": {"code": "00", "label": "Approuvee"},
+              "processingCode": {"transactionType": "Achat", "sourceAccount": "Courant", "destinationAccount": "N/A"},
+              "functionCode": "100 - Demande d'autorisation",
+              "isFraudSuspect": false, "isSystemError": false
+            }""")))
+    @ApiResponse(responseCode = "404", description = "Transaction introuvable pour cet identifiant.")
     @GetMapping("/iso/transaction/{transactionId}")
     public ResponseEntity<Map<String, Object>> decodeTransaction(
+            @Parameter(description = "Identifiant technique de la transaction", example = "TXN20260715112233")
             @PathVariable String transactionId) {
         AutohoActivityAdmEntity e = findByTransactionId(transactionId);
         Map<String, Object> result = new LinkedHashMap<>();
@@ -293,12 +375,23 @@ public class MonetixAnalyticsController {
     // DASHBOARD SYNTHÈSE ANALYTIQUE
     // ═══════════════════════════════════════════════════════════════════════════
 
-    /**
-     * GET /api/v1/analytics/dashboard?businessDate=2026-04-22
-     * KPIs analytiques pour la page MonetixAnalytics
-     */
+    @Operation(
+        summary = "KPIs analytiques de synthese (page Analytique Monetique)",
+        description = """
+            Agrege, pour une date metier donnee (ou le jour courant si omise), les indicateurs cles de la page \
+            d'analytique avancee : volume total, part de transactions puce EMV, transactions suspectes de \
+            fraude, depassements de SLA, reglements en attente et transactions multi-devises.""")
+    @ApiResponse(responseCode = "200", description = "Tableau de bord analytique.",
+        content = @Content(examples = @ExampleObject(value = """
+            {
+              "businessDate": "2026-07-15", "totalTransactions": 1873, "chipEmvTransactions": 1420,
+              "chipEmvPct": 75.8, "fraudCodeTransactions": 3, "slaBreaches": 12,
+              "pendingSettlement": 47, "crossCurrencyTx": 210, "crossCurrencyPct": 11.2,
+              "actionCodeDistribution": {"00": 1760, "05": 94, "51": 19}
+            }""")))
     @GetMapping("/dashboard")
     public ResponseEntity<Map<String, Object>> getDashboard(
+            @Parameter(description = "Date metier (par defaut : aujourd'hui)", example = "2026-07-15")
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate businessDate) {
 
@@ -329,12 +422,17 @@ public class MonetixAnalyticsController {
         return ResponseEntity.ok(dashboard);
     }
 
-    /**
-     * GET /api/v1/analytics/transaction/{transactionId}/full
-     * Analyse complète d'une transaction (EMV + Time + Currency + ISO)
-     */
+    @Operation(
+        summary = "Analyse 360 degres d'une transaction (EMV + Temporel + Devise + ISO)",
+        description = """
+            Endpoint agregateur combinant en une seule reponse le decodage ISO 8583, le diagnostic EMV/puce, \
+            l'analyse temporelle et l'analyse multi-devise d'une transaction. Utilise par la vue "Detail \
+            transaction" du frontend pour eviter 4 appels reseau separes.""")
+    @ApiResponse(responseCode = "200", description = "Analyse complete de la transaction.")
+    @ApiResponse(responseCode = "404", description = "Transaction introuvable pour cet identifiant.")
     @GetMapping("/transaction/{transactionId}/full")
     public ResponseEntity<Map<String, Object>> getFullAnalysis(
+            @Parameter(description = "Identifiant technique de la transaction", example = "TXN20260715112233")
             @PathVariable String transactionId) {
 
         AutohoActivityAdmEntity e = findByTransactionId(transactionId);

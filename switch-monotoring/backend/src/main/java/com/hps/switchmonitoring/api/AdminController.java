@@ -3,6 +3,13 @@ package com.hps.switchmonitoring.api;
 import com.hps.switchmonitoring.domain.AppUserEntity;
 import com.hps.switchmonitoring.service.UserService;
 import com.hps.switchmonitoring.service.email.EmailValidationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +23,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/admin")
+@Tag(name = "Administration", description = "Gestion des utilisateurs (reserve au role ADMIN, verifie via l'en-tete X-User-Role)")
+@ApiResponse(responseCode = "403", description = "Acces refuse : l'en-tete X-User-Role n'est pas ADMIN.",
+    content = @Content(examples = @ExampleObject(value = "{\"error\": \"Accès réservé aux administrateurs.\"}")))
 public class AdminController {
 
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
@@ -47,9 +57,22 @@ public class AdminController {
      * @param email the email address to validate
      * @return JSON: { "valid": boolean, "email": string, "reason": string }
      */
+    @Operation(
+        summary = "Valider une adresse email (format + verification DNS du domaine)",
+        description = """
+            Verifie qu'un domaine email peut effectivement recevoir des messages (lookup DNS MX). \
+            Utilise avant de creer/inviter un utilisateur pour eviter de saisir un domaine inexistant.""")
+    @ApiResponse(responseCode = "200", description = "Resultat de la validation (booleen `valid`).",
+        content = @Content(examples = {
+            @ExampleObject(name = "Domaine valide", value = """
+                {"valid": true, "email": "amine.icame16@gmail.com", "reason": "Domaine verifie par DNS — email valide."}"""),
+            @ExampleObject(name = "Domaine invalide", value = """
+                {"valid": false, "email": "test@domaine-inexistant-xyz.com", "reason": "Domaine invalide ou inexistant. Creation bloquee."}""")
+        }))
     @GetMapping("/validate-email")
     public ResponseEntity<Map<String, Object>> validateEmail(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(description = "Adresse email a valider", example = "amine.icame16@gmail.com", required = true)
             @RequestParam String email) {
         ResponseEntity<Map<String, Object>> forbidden = forbiddenIfNotAdmin(userRole);
         if (forbidden != null) return forbidden;
@@ -79,9 +102,38 @@ public class AdminController {
     // ── POST /api/v1/admin/invite ─────────────────────────────────────────────
     // Crée un compte inactif et envoie le lien d'activation par email.
 
+    @Operation(
+        summary = "Inviter un nouvel utilisateur",
+        description = """
+            Cree un compte inactif et envoie un email contenant un lien d'activation \
+            (valide 48h). Si le SMTP n'est pas configure, le lien est retourne directement \
+            dans la reponse (`activationLink`) pour etre partage manuellement.
+
+            Si l'email existe deja, la reponse reste generique (succes) pour eviter \
+            l'enumeration des comptes existants — verifiez `emailSent`/`activationLink` \
+            pour savoir si une invitation a reellement ete envoyee.""")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = @ExampleObject(value = """
+        {
+          "email": "nouveau.utilisateur@hps.ma",
+          "firstName": "Karim",
+          "lastName": "Tazi",
+          "role": "USER",
+          "projects": "AWB,BMCE"
+        }""")))
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Invitation creee (email envoye ou lien a partager).",
+            content = @Content(examples = {
+                @ExampleObject(name = "Email envoye", value = """
+                    {"success": true, "userId": 12, "email": "nouveau.utilisateur@hps.ma", "isActive": false, "emailSent": true, "message": "Invitation envoyée par email à nouveau.utilisateur@hps.ma."}"""),
+                @ExampleObject(name = "SMTP non configure", value = """
+                    {"success": true, "userId": 12, "email": "nouveau.utilisateur@hps.ma", "isActive": false, "emailSent": false, "message": "SMTP non configuré. Partagez le lien ci-dessous.", "activationLink": "http://localhost:4200/activate/8f14e45fceea167a5a36dedd4bea2543"}""")
+            })),
+        @ApiResponse(responseCode = "400", description = "Champs obligatoires manquants ou email invalide.",
+            content = @Content(examples = @ExampleObject(value = "{\"success\": false, \"error\": \"email, firstName et lastName sont obligatoires.\"}")))
+    })
     @PostMapping("/invite")
     public ResponseEntity<Map<String, Object>> inviteUser(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole,
             @RequestBody Map<String, String> body) {
         ResponseEntity<Map<String, Object>> forbidden = forbiddenIfNotAdmin(userRole);
         if (forbidden != null) return forbidden;
@@ -135,9 +187,26 @@ public class AdminController {
 
     // ── GET /api/v1/admin/users ───────────────────────────────────────────────
 
+    @Operation(
+        summary = "Lister tous les utilisateurs",
+        description = "Retourne la liste complete des comptes (actifs, bloques, en attente d'activation).")
+    @ApiResponse(responseCode = "200", description = "Liste des utilisateurs.",
+        content = @Content(examples = @ExampleObject(value = """
+            [
+              {
+                "id": 1, "username": "admin.initial", "firstName": "Admin", "lastName": "HPS",
+                "email": "admin@hps.local", "role": "ADMIN", "status": "ACTIVE", "isActive": true,
+                "mustChangePassword": false, "projects": "", "createdAt": "2026-01-15"
+              },
+              {
+                "id": 2, "username": "amine.icame16", "firstName": "amine", "lastName": "içame",
+                "email": "amine.icame16@gmail.com", "role": "USER", "status": "ACTIVE", "isActive": true,
+                "mustChangePassword": false, "projects": "SGM", "createdAt": "2026-07-15"
+              }
+            ]""")))
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> listUsers(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole) {
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole) {
         if (!"ADMIN".equalsIgnoreCase(userRole)) {
             return ResponseEntity.status(403).body(List.of());
         }
@@ -164,10 +233,27 @@ public class AdminController {
 
     // ── PUT /api/v1/admin/users/{id} ──────────────────────────────────────────
 
+    @Operation(
+        summary = "Modifier un utilisateur",
+        description = "Met a jour le prenom, nom, role et/ou les projets assignes d'un utilisateur existant. "
+            + "Le champ `projects` est optionnel : omis, il n'est pas modifie.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = @ExampleObject(value = """
+        {
+          "firstName": "Amine",
+          "lastName": "Icame",
+          "role": "USER",
+          "projects": "SGM,AWB"
+        }""")))
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Utilisateur mis a jour.",
+            content = @Content(examples = @ExampleObject(value = """
+                {"success": true, "id": 2, "firstName": "Amine", "lastName": "Icame", "role": "USER"}"""))),
+        @ApiResponse(responseCode = "400", description = "Champs obligatoires manquants ou id inconnu.")
+    })
     @PutMapping("/users/{id}")
     public ResponseEntity<Map<String, Object>> updateUser(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @PathVariable Long id,
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(description = "Identifiant de l'utilisateur", example = "2") @PathVariable Long id,
             @RequestBody Map<String, String> body) {
         ResponseEntity<Map<String, Object>> forbidden = forbiddenIfNotAdmin(userRole);
         if (forbidden != null) return forbidden;
@@ -198,10 +284,16 @@ public class AdminController {
 
     // ── DELETE /api/v1/admin/users/{id} ───────────────────────────────────────
 
+    @Operation(summary = "Supprimer un utilisateur", description = "Suppression definitive du compte.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Utilisateur supprime.",
+            content = @Content(examples = @ExampleObject(value = "{\"success\": true, \"message\": \"Utilisateur supprime.\"}"))),
+        @ApiResponse(responseCode = "400", description = "Identifiant inconnu.")
+    })
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Map<String, Object>> deleteUser(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @PathVariable Long id) {
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(description = "Identifiant de l'utilisateur", example = "8") @PathVariable Long id) {
         ResponseEntity<Map<String, Object>> forbidden = forbiddenIfNotAdmin(userRole);
         if (forbidden != null) return forbidden;
         try {
@@ -216,10 +308,15 @@ public class AdminController {
 
     // ── PATCH /api/v1/admin/users/{id}/status ─────────────────────────────────
 
+    @Operation(
+        summary = "Basculer le statut ACTIVE/BLOCKED d'un utilisateur",
+        description = "Bloque un compte actif ou reactive un compte bloque (bascule, pas de valeur explicite a fournir).")
+    @ApiResponse(responseCode = "200", description = "Nouveau statut applique.",
+        content = @Content(examples = @ExampleObject(value = "{\"success\": true, \"id\": 8, \"status\": \"BLOCKED\"}")))
     @PatchMapping("/users/{id}/status")
     public ResponseEntity<Map<String, Object>> toggleStatus(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @PathVariable Long id) {
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(description = "Identifiant de l'utilisateur", example = "8") @PathVariable Long id) {
         ResponseEntity<Map<String, Object>> forbidden = forbiddenIfNotAdmin(userRole);
         if (forbidden != null) return forbidden;
         try {
@@ -238,10 +335,21 @@ public class AdminController {
 
     // ── POST /api/v1/admin/users/{id}/reset-password ──────────────────────────
 
+    @Operation(
+        summary = "Forcer la reinitialisation du mot de passe d'un utilisateur",
+        description = """
+            Genere un jeton de reinitialisation et envoie un email a l'utilisateur. \
+            Si le SMTP n'est pas configure, le lien est retourne directement dans la reponse.""")
+    @ApiResponse(responseCode = "200", description = "Reinitialisation initiee.",
+        content = @Content(examples = {
+            @ExampleObject(name = "Email envoye", value = "{\"success\": true, \"emailSent\": true, \"message\": \"Email de reinitialisation envoye.\"}"),
+            @ExampleObject(name = "SMTP non configure", value = """
+                {"success": true, "emailSent": false, "resetLink": "http://localhost:4200/reset-password/3f9a1c2b8e7d4560af12", "message": "SMTP non configure. Partagez le lien de reinitialisation."}""")
+        }))
     @PostMapping("/users/{id}/reset-password")
     public ResponseEntity<Map<String, Object>> resetPassword(
-            @RequestHeader(value = "X-User-Role", required = false) String userRole,
-            @PathVariable Long id) {
+            @Parameter(hidden = true) @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @Parameter(description = "Identifiant de l'utilisateur", example = "8") @PathVariable Long id) {
         ResponseEntity<Map<String, Object>> forbidden = forbiddenIfNotAdmin(userRole);
         if (forbidden != null) return forbidden;
         try {
