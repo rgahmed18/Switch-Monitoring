@@ -62,10 +62,10 @@ public class SocketLogEntity implements Serializable {
     @Column(name = "ERROR_CODE", length = 10)
     private String errorCode;
 
-    @Column(name = "ERROR_MESSAGE")
+    @Column(name = "ERROR_MESSAGE", length = 4000)
     private String errorMessage;
 
-    @Column(name = "HEX_DUMP")
+    @Column(name = "HEX_DUMP", columnDefinition = "CLOB")
     private String hexDump; // Dump hexadécimal du message
 
     @Column(name = "RETRY_COUNT")

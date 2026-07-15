@@ -5,6 +5,10 @@
 -- Alimentée automatiquement par ArchiveScheduler (chaque nuit à 02h00).
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+SET SQLBLANKLINES ON
+
 CREATE TABLE AUTHO_ACTIVITY_ADM_ARCHIVE
 AS SELECT * FROM AUTHO_ACTIVITY_ADM WHERE 1=0;
 
@@ -26,7 +30,7 @@ CREATE INDEX IDX_ARCHIVE_ACTION_CODE
 
 -- Vue de recherche unifiée (production + archive)
 CREATE OR REPLACE VIEW V_AUTHO_ALL_HISTORY AS
-    SELECT *, NULL AS archive_date FROM AUTHO_ACTIVITY_ADM
+    SELECT a.*, NULL AS archive_date FROM AUTHO_ACTIVITY_ADM a
     UNION ALL
     SELECT * FROM AUTHO_ACTIVITY_ADM_ARCHIVE;
 

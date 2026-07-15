@@ -29,7 +29,7 @@ export class ConfigService {
   ) {}
 
   /**
-   * 🎯 Load complete system configuration from backend
+   * Load complete system configuration from backend
    * This includes:
    * - Zones & Countries
    * - Banks by country
@@ -69,7 +69,7 @@ export class ConfigService {
   }
 
   /**
-   * 🌍 Get zones with caching
+   * Get zones with caching
    */
   public getZones(): Observable<{ [zone: string]: string[] }> {
     const config = this.stateService.systemConfig();
@@ -80,21 +80,21 @@ export class ConfigService {
   }
 
   /**
-   * 🏦 Get banks for a specific zone
+   * Get banks for a specific zone
    */
   public getBanksByZone(zone: string): Observable<any> {
     return this.apiService.getBanksByZone(zone);
   }
 
   /**
-   * 🏦 Get banks for a specific country
+   * Get banks for a specific country
    */
   public getBanksByCountry(country: string): Observable<any> {
     return this.apiService.getBanksByCountry(country);
   }
 
   /**
-   * 📊 Get all transaction types (MTI codes)
+   * Get all transaction types (MTI codes)
    */
   public getTransactionTypes(): Observable<{ [mti: string]: string }> {
     const config = this.stateService.systemConfig();
@@ -105,7 +105,7 @@ export class ConfigService {
   }
 
   /**
-   * 📊 Get transaction types for a specific channel
+   * Get transaction types for a specific channel
    */
   public getTransactionTypesByChannel(
     channel: 'GAB' | 'POS' | 'ECOM'
@@ -114,7 +114,7 @@ export class ConfigService {
   }
 
   /**
-   * ✅ Get all ISO 8583 response codes
+   * Get all ISO 8583 response codes
    */
   public getResponseCodes(): Observable<{ [code: string]: string }> {
     const config = this.stateService.systemConfig();
@@ -125,23 +125,23 @@ export class ConfigService {
   }
 
   /**
-   * ✅ Get description for a specific response code
+   * Get description for a specific response code
    */
   public getResponseCodeDescription(code: string): Observable<any> {
     return this.apiService.getResponseCode(code);
   }
 
   /**
-   * 🔒 Get security methods for a channel
+   * Get security methods for a channel
    */
   public getSecurityMethodsByChannel(
-    channel: 'ATM' | 'POS' | 'ECOM'
+    channel: 'GAB' | 'POS' | 'ECOM'
   ): Observable<any> {
     return this.apiService.getSecurityMethodsByChannel(channel);
   }
 
   /**
-   * 📈 Get transaction statuses
+   * Get transaction statuses
    */
   public getTransactionStatuses(): Observable<{ [status: string]: string }> {
     const config = this.stateService.systemConfig();
@@ -152,7 +152,7 @@ export class ConfigService {
   }
 
   /**
-   * ❌ Clear cache (useful for manual refresh)
+   * Clear cache (useful for manual refresh)
    */
   public clearCache(): void {
     this.configCache = null;
@@ -160,7 +160,7 @@ export class ConfigService {
   }
 
   /**
-   * 🔄 Force reload configuration (bypasses cache)
+   * Force reload configuration (bypasses cache)
    */
   public forceReloadConfiguration(): Observable<PaymentSystemConfig> {
     this.clearCache();
@@ -168,7 +168,7 @@ export class ConfigService {
   }
 
   /**
-   * 🎯 Get channel-specific transaction types for dropdown
+   * Get channel-specific transaction types for dropdown
    */
   public getChannelTransactionTypeOptions(channel: 'GAB' | 'POS' | 'ECOM'): string[] {
     const refData = this.stateService.referenceData();
@@ -186,7 +186,7 @@ export class ConfigService {
   }
 
   /**
-   * 📊 Get response code color (for UI visualization)
+   * Get response code color (for UI visualization)
    * Green for 00 (approved), Red for errors, Yellow for warnings
    */
   public getResponseCodeColor(code: string): 'success' | 'danger' | 'warning' | 'secondary' {
@@ -209,42 +209,41 @@ export class ConfigService {
   }
 
   /**
-   * 🎯 Get response code emoji
+   * Get response code emoji
    */
   public getResponseCodeEmoji(code: string): string {
-    if (code === '00') return '✅';
-    
+    if (code === '00') return '';
+
     const configs = this.stateService.systemConfig();
-    if (!configs?.responseCodes) return '❓';
-    
+    if (!configs?.responseCodes) return '';
+
     const description = configs.responseCodes[code]?.toLowerCase() || '';
-    
+
     if (description.includes('approuvée') || description.includes('approved')) {
-      return '✅';
+      return '';
     } else if (description.includes('timeout')) {
-      return '⏱️';
+      return '';
     } else if (description.includes('fraude') || description.includes('fraud')) {
-      return '🚨';
+      return '';
     } else if (description.includes('indisponible') || description.includes('unavailable')) {
-      return '🔌';
+      return '';
     }
-    
-    return '❌';
+
+    return '';
   }
 
   /**
-   * 📊 Get formatted response code for display
+   * Get formatted response code for display
    */
   public formatResponseCodeForDisplay(code: string): string {
-    const emoji = this.getResponseCodeEmoji(code);
     const configs = this.stateService.systemConfig();
     const description = configs?.responseCodes?.[code] || 'Unknown code';
-    
-    return `${emoji} ${code} - ${description}`;
+
+    return `${code} - ${description}`;
   }
 
   /**
-   * 🏗️ Validate if all required configurations are loaded
+   * Validate if all required configurations are loaded
    */
   public isConfigurationLoaded(): boolean {
     const config = this.stateService.systemConfig();
@@ -255,7 +254,7 @@ export class ConfigService {
   }
 
   /**
-   * 📊 Get configuration summary for dashboard
+   * Get configuration summary for dashboard
    */
   public getConfigurationSummary(): { totalZones: number; totalCountries: number; totalBanks: number; totalCodes: number } {
     const config = this.stateService.systemConfig();

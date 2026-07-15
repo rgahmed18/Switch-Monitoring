@@ -8,6 +8,19 @@
 -- L'admin DOIT le changer à sa première connexion (MUST_CHANGE_PASSWORD = 1).
 -- ============================================================================
 
+-- Si connecte en tant qu'utilisateur commun (ex: sysdba en conteneur Docker),
+-- bascule vers le PDB applicatif. Sans effet (et sans erreur) si deja connecte
+-- directement au PDB via un connect string //host:port/FREEPDB1.
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+-- Si connecte en tant que SYS (sysdba), les objets crees sans prefixe de
+-- schema doivent quand meme atterrir dans PFE_SW_MON, pas dans SYS.
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+
+-- Evite qu'une ligne vide au milieu d'un bloc PL/SQL/SQL multi-lignes ne soit
+-- interpretee par SQL*Plus comme une commande d'execution prematuree.
+SET SQLBLANKLINES ON
+
 -- Séquence pour l'ID (créée si elle n'existe pas déjà)
 BEGIN
     EXECUTE IMMEDIATE 'CREATE SEQUENCE APP_USER_SEQ START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE';

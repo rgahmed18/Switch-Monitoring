@@ -198,7 +198,7 @@ export class GabComponent implements OnInit, OnDestroy {
 
   private analyzeGab() {
     const atmTx = this.transactions.filter(tx => 
-      tx.mtiCode.startsWith('04') || tx.channel === 'GAB' || tx.gabId
+      (tx.mtiCode || '').startsWith('04') || tx.channel === 'GAB' || tx.gabId
     );
 
     this.summary.totalGab = atmTx.length;

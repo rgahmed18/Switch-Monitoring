@@ -4,6 +4,10 @@
 -- Source: Fournit par l'encadrant (table réelle production banking)
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+SET SQLBLANKLINES ON
+
 -- Créer la table AUTHO_ACTIVITY_ADM avec tous les champs
 CREATE TABLE AUTHO_ACTIVITY_ADM
     (reference_number               CHAR(12 CHAR) ,

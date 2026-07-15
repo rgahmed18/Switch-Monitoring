@@ -11,7 +11,7 @@ import { RouterModule, Router } from '@angular/router';
       <div class="nav-container">
         <!-- Logo -->
         <div class="nav-logo">
-          <span class="logo-icon">📊</span>
+          <span class="logo-icon"></span>
           <span class="logo-text">Switch Monitor</span>
         </div>
 
@@ -22,56 +22,56 @@ import { RouterModule, Router } from '@angular/router';
             routerLinkActive="active" 
             [routerLinkActiveOptions]="{exact: true}"
             class="nav-item">
-            <span>🏠</span>
+            <span></span>
             <span>Dashboard</span>
           </a>
           <a 
             routerLink="/analysis" 
             routerLinkActive="active"
             class="nav-item highlight">
-            <span>📊</span>
+            <span></span>
             <span>Analyse Trans.</span>
           </a>
           <a 
             routerLink="/transactions" 
             routerLinkActive="active"
             class="nav-item">
-            <span>💳</span>
+            <span></span>
             <span>Transactions</span>
           </a>
           <a 
             routerLink="/atm" 
             routerLinkActive="active"
             class="nav-item">
-            <span>🏦</span>
+            <span></span>
             <span>ATM/GAB</span>
           </a>
           <a 
             routerLink="/pos" 
             routerLinkActive="active"
             class="nav-item">
-            <span>🛒</span>
+            <span></span>
             <span>POS</span>
           </a>
           <a
             routerLink="/ecom"
             routerLinkActive="active"
             class="nav-item">
-            <span>🌐</span>
+            <span></span>
             <span>E-Commerce</span>
           </a>
           <a
             routerLink="/monetix"
             routerLinkActive="active"
             class="nav-item highlight monetix-link">
-            <span>🧠</span>
+            <span></span>
             <span>Intelligence</span>
           </a>
           <a
             routerLink="/geo"
             routerLinkActive="active"
             class="nav-item highlight geo-link">
-            <span>🌍</span>
+            <span></span>
             <span>Zone Health</span>
           </a>
         </div>
@@ -79,10 +79,10 @@ import { RouterModule, Router } from '@angular/router';
         <!-- Right Actions -->
         <div class="nav-actions">
           <button class="nav-btn" title="Paramètres">
-            <span>⚙️</span>
+            <span></span>
           </button>
           <button class="nav-btn" title="Aide">
-            <span>❓</span>
+            <span>?</span>
           </button>
         </div>
       </div>

@@ -30,7 +30,7 @@ import { ApiService } from '../../api.service';
       <div class="w-full">
         <!-- Header -->
         <div class="mb-8">
-          <h1 class="text-4xl font-bold text-white mb-2">🔧 Générateur de Données de Test</h1>
+          <h1 class="text-4xl font-bold text-white mb-2">Générateur de Données de Test</h1>
           <p class="text-gray-400">Injecte des données réalistes pour visualiser tous les graphes du dashboard</p>
         </div>
 
@@ -38,7 +38,7 @@ import { ApiService } from '../../api.service';
         <p-card class="mb-6">
           <ng-template pTemplate="header">
             <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-4">
-              <h2 class="text-white text-xl font-semibold">⚙ Paramètres de Génération</h2>
+              <h2 class="text-white text-xl font-semibold">Paramètres de Génération</h2>
             </div>
           </ng-template>
 
@@ -125,7 +125,7 @@ import { ApiService } from '../../api.service';
           <p-card>
             <ng-template pTemplate="header">
               <div class="bg-gradient-to-r from-blue-600 to-red-500 p-3">
-                <h3 class="text-white font-semibold">🔥 Aperçu: Latence par Heure (MA)</h3>
+                <h3 class="text-white font-semibold">Aperçu: Latence par Heure (MA)</h3>
               </div>
             </ng-template>
             <p-chart
@@ -139,7 +139,7 @@ import { ApiService } from '../../api.service';
           <p-card>
             <ng-template pTemplate="header">
               <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-3">
-                <h3 class="text-white font-semibold">📊 Aperçu: Modes d'Entrée (DE22)</h3>
+                <h3 class="text-white font-semibold">Aperçu: Modes d'Entrée (DE22)</h3>
               </div>
             </ng-template>
             <p-chart
@@ -153,7 +153,7 @@ import { ApiService } from '../../api.service';
           <p-card>
             <ng-template pTemplate="header">
               <div class="bg-gradient-to-r from-blue-500 to-cyan-500 p-3">
-                <h3 class="text-white font-semibold">💳 Top 5 MCC</h3>
+                <h3 class="text-white font-semibold">Top 5 MCC</h3>
               </div>
             </ng-template>
             <p-chart
@@ -167,7 +167,7 @@ import { ApiService } from '../../api.service';
           <p-card>
             <ng-template pTemplate="header">
               <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-3">
-                <h3 class="text-white font-semibold">✅ Distribution des Codes Réponse</h3>
+                <h3 class="text-white font-semibold">Distribution des Codes Réponse</h3>
               </div>
             </ng-template>
             <p-chart
@@ -182,14 +182,14 @@ import { ApiService } from '../../api.service';
         <p-card class="mt-6">
           <ng-template pTemplate="header">
             <div class="bg-gradient-to-r from-indigo-600 to-blue-600 p-4">
-              <h2 class="text-white text-lg font-semibold">📚 Ressources Utilisées</h2>
+              <h2 class="text-white text-lg font-semibold">Ressources Utilisées</h2>
             </div>
           </ng-template>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Acquirers -->
             <div>
-              <h3 class="font-semibold text-gray-800 mb-3">🏦 Acquéreurs (10)</h3>
+              <h3 class="font-semibold text-gray-800 mb-3">Acquéreurs (10)</h3>
               <div class="space-y-2">
                 <div *ngFor="let acq of acquirers" class="text-sm text-gray-700">
                   <span class="font-mono bg-gray-100 px-2 py-1 rounded">{{ acq }}</span>
@@ -199,7 +199,7 @@ import { ApiService } from '../../api.service';
 
             <!-- Entry Modes -->
             <div>
-              <h3 class="font-semibold text-gray-800 mb-3">📍 Modes d'Entrée (3)</h3>
+              <h3 class="font-semibold text-gray-800 mb-3">Modes d'Entrée (3)</h3>
               <div class="space-y-2">
                 <div class="text-sm text-gray-700"><strong>01</strong> - Manual Entry</div>
                 <div class="text-sm text-gray-700"><strong>05</strong> - Contactless/NFC</div>
@@ -209,7 +209,7 @@ import { ApiService } from '../../api.service';
 
             <!-- MCC Codes -->
             <div>
-              <h3 class="font-semibold text-gray-800 mb-3">🏪 MCC Codes (10)</h3>
+              <h3 class="font-semibold text-gray-800 mb-3">MCC Codes (10)</h3>
               <div class="space-y-2">
                 <div class="text-sm text-gray-700"><strong>5411</strong> - Supermarkets</div>
                 <div class="text-sm text-gray-700"><strong>5812</strong> - Fast Food</div>
@@ -221,7 +221,7 @@ import { ApiService } from '../../api.service';
 
             <!-- Response Codes -->
             <div>
-              <h3 class="font-semibold text-gray-800 mb-3">✅ Codes Réponse</h3>
+              <h3 class="font-semibold text-gray-800 mb-3">Codes Réponse</h3>
               <div class="space-y-2">
                 <div class="text-sm text-gray-700"><strong>00</strong> - Approved (97%)</div>
                 <div class="text-sm text-gray-700"><strong>91</strong> - Insufficient Funds (1%)</div>
@@ -232,7 +232,7 @@ import { ApiService } from '../../api.service';
 
             <!-- MTI Types -->
             <div>
-              <h3 class="font-semibold text-gray-800 mb-3">📡 Message Types (MTI)</h3>
+              <h3 class="font-semibold text-gray-800 mb-3">Message Types (MTI)</h3>
               <div class="space-y-2">
                 <div class="text-sm text-gray-700"><strong>0200/0210</strong> - Purchase</div>
                 <div class="text-sm text-gray-700"><strong>0420</strong> - Reversals</div>
@@ -242,7 +242,7 @@ import { ApiService } from '../../api.service';
 
             <!-- Merchants -->
             <div>
-              <h3 class="font-semibold text-gray-800 mb-3">🏢 15 Commerçants</h3>
+              <h3 class="font-semibold text-gray-800 mb-3">15 Commerçants</h3>
               <div class="space-y-1 text-xs text-gray-700 max-h-32 overflow-y-auto">
                 <div *ngFor="let merchant of merchants">{{ merchant }}</div>
               </div>
@@ -254,7 +254,7 @@ import { ApiService } from '../../api.service';
         <p-card class="mt-6 bg-blue-50 border-l-4 border-blue-500">
           <ng-template pTemplate="header">
             <div class="bg-blue-100 p-4">
-              <h2 class="text-blue-900 font-semibold">📖 Instructions</h2>
+              <h2 class="text-blue-900 font-semibold">Instructions</h2>
             </div>
           </ng-template>
           <div class="space-y-3 text-gray-700">
@@ -274,7 +274,7 @@ import { ApiService } from '../../api.service';
               <strong>5. Visualisation:</strong> Allez au dashboard pour voir les nouveaux graphes avec données réelles
             </p>
             <p class="text-sm text-gray-600">
-              💡 <strong>Astuce:</strong> Genérez 10,000 transactions sur 24 heures pour une bonne représentation de tous les KPIs
+              <strong>Astuce:</strong> Genérez 10,000 transactions sur 24 heures pour une bonne représentation de tous les KPIs
             </p>
           </div>
         </p-card>
@@ -404,14 +404,14 @@ export class DataGeneratorComponent implements OnInit {
 
       this.messageService.add({
         severity: 'success',
-        summary: '✅ Données Générées',
+        summary: 'Données Générées',
         detail: `${this.generatedCount} transactions distribuées sur ${this.daysSpan} jours avec courbe de charge réaliste`,
         life: 5000
       });
     } catch (error) {
       this.messageService.add({
         severity: 'error',
-        summary: '❌ Erreur',
+        summary: 'Erreur',
         detail: 'Une erreur est survenue lors de la génération'
       });
     } finally {

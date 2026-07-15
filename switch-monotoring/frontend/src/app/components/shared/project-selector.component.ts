@@ -26,12 +26,12 @@ const COUNTRY_ZONE: Record<string, string> = {
 const ZONE_ORDER = ['Afrique', 'Europe', 'Amériques', 'Asie', 'Moyen-Orient'];
 
 const FLAGS: Record<string, string> = {
-  'Maroc': '🇲🇦', "Côte d'Ivoire": '🇨🇮', 'Tunisie': '🇹🇳', 'Sénégal': '🇸🇳',
-  'Afrique du Sud': '🇿🇦', 'Nigeria': '🇳🇬', 'Égypte': '🇪🇬',
-  'France': '🇫🇷', 'Royaume-Uni': '🇬🇧', 'Espagne': '🇪🇸', 'Allemagne': '🇩🇪', 'Grèce': '🇬🇷',
-  'Etats-Unis': '🇺🇸', 'Canada': '🇨🇦', 'Mexique': '🇲🇽', 'Brésil': '🇧🇷',
-  'Chine': '🇨🇳', 'Japon': '🇯🇵', 'Singapour': '🇸🇬', 'Hong Kong': '🇭🇰',
-  'Arabie Saoudite': '🇸🇦', 'Emirats Arabes Unis': '🇦🇪', 'Turquie': '🇹🇷',
+  'Maroc': '', "Côte d'Ivoire": '', 'Tunisie': '', 'Sénégal': '',
+  'Afrique du Sud': '', 'Nigeria': '', 'Égypte': '',
+  'France': '', 'Royaume-Uni': '', 'Espagne': '', 'Allemagne': '', 'Grèce': '',
+  'Etats-Unis': '', 'Canada': '', 'Mexique': '', 'Brésil': '',
+  'Chine': '', 'Japon': '', 'Singapour': '', 'Hong Kong': '',
+  'Arabie Saoudite': '', 'Emirats Arabes Unis': '', 'Turquie': '',
 };
 
 interface CountryGroup { country: string; flag: string; projects: BankProject[]; }

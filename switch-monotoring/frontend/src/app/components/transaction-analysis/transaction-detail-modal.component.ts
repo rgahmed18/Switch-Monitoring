@@ -37,7 +37,7 @@ interface TimelineStep {
       <header class="dh">
         <div class="dh-left">
           <div class="dh-icon" [class.icon-ok]="isApproved" [class.icon-fail]="isDeclined">
-            {{ isApproved ? '✓' : isDeclined ? '✕' : '?' }}
+            {{ isApproved ? 'OK' : isDeclined ? 'X' : '?' }}
           </div>
           <div class="dh-text">
             <div class="dh-status">{{ statusLabel }}</div>
@@ -45,7 +45,7 @@ interface TimelineStep {
             <div class="dh-time">{{ formatDateTime(tx?.transmissionDateAndTime?.toString()) }}</div>
           </div>
         </div>
-        <button class="dh-close" (click)="closed.emit()">✕</button>
+        <button class="dh-close" (click)="closed.emit()">X</button>
       </header>
 
       <!-- DECLINE BANNER -->
@@ -176,7 +176,7 @@ interface TimelineStep {
                 {{ b.label }}
               </div>
             </div>
-            <div class="tvr-clean" *ngIf="activeTvrBits.length === 0">✓ Aucun incident TVR détecté</div>
+            <div class="tvr-clean" *ngIf="activeTvrBits.length === 0">Aucun incident TVR détecté</div>
           </div>
 
           <div class="fields" style="margin-top:12px">
@@ -972,7 +972,7 @@ export class TransactionDetailModalComponent implements OnChanges {
       {
         name: 'Réponse',
         time: this.formatDateTime(this.tx?.responseDateAndTime?.toString()),
-        desc: (this.isApproved ? '✓ Approuvée' : this.isDeclined ? '✕ Refusée' : 'En attente')
+        desc: (this.isApproved ? 'Approuvée' : this.isDeclined ? 'Refusée' : 'En attente')
             + (this.tx?.latencyMs ? ` -${this.tx.latencyMs}ms` : ''),
         done: !!this.tx?.responseDateAndTime,
         fail: this.isDeclined,

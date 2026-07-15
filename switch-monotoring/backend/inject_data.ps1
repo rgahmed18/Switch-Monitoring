@@ -25,7 +25,7 @@ Write-Host "║     Data Generator for PowerShell                               
 Write-Host "╚════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
 
 Write-Host ""
-Write-Host "📊 Configuration" -ForegroundColor Yellow
+Write-Host "Configuration" -ForegroundColor Yellow
 Write-Host "═════════════════════════════════════════════════════════════════════════════"
 Write-Host "Username:   $Username"
 Write-Host "Password:   $(('*' * $Password.Length))"
@@ -35,23 +35,23 @@ Write-Host ""
 
 # Vérifier que le script existe
 if (-not (Test-Path $ScriptPath)) {
-    Write-Host "❌ ERREUR: Script SQL non trouvé à: $ScriptPath" -ForegroundColor Red
+    Write-Host "ERREUR: Script SQL non trouvé à: $ScriptPath" -ForegroundColor Red
     exit 1
 }
 
-Write-Host "✅ Script SQL trouvé" -ForegroundColor Green
+Write-Host "Script SQL trouvé" -ForegroundColor Green
 
 # Vérifier que sqlplus est disponible
 if (-not (Get-Command sqlplus -ErrorAction SilentlyContinue)) {
-    Write-Host "❌ ERREUR: sqlplus n'est pas disponible dans le PATH" -ForegroundColor Red
+    Write-Host "ERREUR: sqlplus n'est pas disponible dans le PATH" -ForegroundColor Red
     Write-Host "   Installez Oracle Client Tools ou ajoutez le répertoire au PATH"
     exit 1
 }
 
-Write-Host "✅ SQL*Plus est disponible" -ForegroundColor Green
+Write-Host "SQL*Plus est disponible" -ForegroundColor Green
 
 Write-Host ""
-Write-Host "🚀 Démarrage de l'injection..." -ForegroundColor Green
+Write-Host "Démarrage de l'injection..." -ForegroundColor Green
 Write-Host "═════════════════════════════════════════════════════════════════════════════"
 Write-Host ""
 
@@ -83,7 +83,7 @@ try {
     $ExitCode = $LASTEXITCODE
     
 } catch {
-    Write-Host "❌ ERREUR lors de l'exécution: $_" -ForegroundColor Red
+    Write-Host "ERREUR lors de l'exécution: $_" -ForegroundColor Red
     $ExitCode = 1
 }
 
@@ -95,16 +95,16 @@ Write-Host ""
 Write-Host "═════════════════════════════════════════════════════════════════════════════"
 
 if ($ExitCode -eq 0 -or $ExitCode -eq "") {
-    Write-Host "✅ INJECTION COMPLÈTE!" -ForegroundColor Green
+    Write-Host "INJECTION COMPLÈTE!" -ForegroundColor Green
     Write-Host "Durée: $($Duration.Minutes)m $($Duration.Seconds)s" -ForegroundColor Green
     Write-Host ""
-    Write-Host "📊 Prochaines étapes:" -ForegroundColor Yellow
+    Write-Host "Prochaines étapes:" -ForegroundColor Yellow
     Write-Host "  1. Naviguez à: http://localhost:4200" -ForegroundColor Cyan
     Write-Host "  2. Tous les 19 graphes affichent les données!" -ForegroundColor Cyan
     Write-Host "  3. Analysez et éditez selon vos besoins" -ForegroundColor Cyan
     Write-Host ""
 } else {
-    Write-Host "❌ ERREUR LORS DE L'INJECTION" -ForegroundColor Red
+    Write-Host "ERREUR LORS DE L'INJECTION" -ForegroundColor Red
     Write-Host "Code d'erreur: $ExitCode" -ForegroundColor Red
     Write-Host ""
     Write-Host "Dépannage:" -ForegroundColor Yellow

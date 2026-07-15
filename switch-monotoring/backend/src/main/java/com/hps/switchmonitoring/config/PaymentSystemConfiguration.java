@@ -9,7 +9,7 @@ import java.util.*;
 public class PaymentSystemConfiguration {
 
     // ============================================================================
-    // 🌍 ZONES GÉOGRAPHIQUES & PAYS
+    // ZONES GÉOGRAPHIQUES & PAYS
     // ============================================================================
 
     public static final Map<String, List<String>> ZONES_AND_COUNTRIES = Map.ofEntries(
@@ -47,7 +47,7 @@ public class PaymentSystemConfiguration {
     );
 
     // ============================================================================
-    // 🏦 BANQUES PAR PAYS
+    // BANQUES PAR PAYS
     // ============================================================================
 
     public static final Map<String, List<String>> BANKS_BY_COUNTRY = Map.ofEntries(
@@ -267,7 +267,7 @@ public class PaymentSystemConfiguration {
     );
 
     // ============================================================================
-    // 📊 TYPES DE TRANSACTIONS (MTI - Message Type Indicator)
+    // TYPES DE TRANSACTIONS (MTI - Message Type Indicator)
     // ============================================================================
 
     public static final Map<String, String> MTI_TYPES = Map.ofEntries(
@@ -292,7 +292,7 @@ public class PaymentSystemConfiguration {
     );
 
     // ============================================================================
-    // 💳 TYPES DE TRANSACTIONS (TRANSACTION CODES)
+    // TYPES DE TRANSACTIONS (TRANSACTION CODES)
     // ============================================================================
 
     public static final Map<String, String> TRANSACTION_TYPES = Map.ofEntries(
@@ -555,91 +555,91 @@ public class PaymentSystemConfiguration {
     );
 
     // ============================================================================
-    // ✅ CODES DE RÉPONSE ISO 8583
+    // CODES DE RÉPONSE ISO 8583
     // ============================================================================
 
     public static final Map<String, String> ISO8583_RESPONSE_CODES = Map.ofEntries(
-        Map.entry("00", "✅ Approuvée - Transaction réussie"),
-        Map.entry("01", "❌ Refuser l'émission - Contactez la banque émettrice"),
-        Map.entry("02", "❌ Transaction invalide - Type de transaction invalide"),
-        Map.entry("03", "❌ Commencement invalide - Numérotation commerciale invalide"),
-        Map.entry("04", "❌ Carte invalide - Numéro de carte non exécurisé"),
-        Map.entry("05", "❌ Déclinée - Problème général"),
-        Map.entry("08", "⏱️ Approuvée (honor with identification)"),
-        Map.entry("10", "❌ Partial approval"),
-        Map.entry("12", "❌ Montant invalide"),
-        Map.entry("13", "❌ Montant invalide - Argent saisie invalide"),
-        Map.entry("14", "❌ Numéro de compte invalide"),
-        Map.entry("15", "⚠️ Numérique indisponible - Établissement indisponible"),
-        Map.entry("19", "❌ Re-envoyer la transaction"),
-        Map.entry("21", "❌ Pas d'opération numérique"),
-        Map.entry("25", "❌ Pas compatible à la norme"),
-        Map.entry("28", "⏱️ Pas accessible - Désaccord d'accès"),
-        Map.entry("29", "❌ Transaction non mutable"),
-        Map.entry("30", "❌ Erreur de format - Exécution partager message long"),
-        Map.entry("31", "❌ Banque non reconnue"),
-        Map.entry("32", "❌ Transaction incomplète"),
-        Map.entry("33", "❌ Carte expiré - Dépassé les délais"),
-        Map.entry("34", "❌ Suspicion de fraude"),
-        Map.entry("35", "❌ Marchand refusé"),
-        Map.entry("36", "❌ Numérique restreinte - Nombre de tentatives restreint"),
-        Map.entry("37", "❌ Appellation expiré"),
-        Map.entry("38", "❌ Dépassement du taux de sécurité"),
-        Map.entry("39", "❌ Compte non trouvé"),
-        Map.entry("40", "❌ Carte perdue - Carte signalé comme perdu"),
-        Map.entry("41", "❌ Carte volée - Carte signalé comme volée"),
-        Map.entry("42", "❌ Aucune compte d'enregistrement"),
-        Map.entry("43", "❌ Carte perdue/Volée - Transaction interdite"),
-        Map.entry("51", "❌ Provision insuffisante - Fond insuffisant"),
-        Map.entry("52", "❌ Pas de compte de chèque"),
-        Map.entry("53", "❌ Pas de compte d'épargne"),
-        Map.entry("54", "❌ Compte fermé"),
-        Map.entry("55", "❌ PIN incorrect - Mauvais code PIN"),
-        Map.entry("56", "❌ Aucune réclamation pour la carte"),
-        Map.entry("57", "❌ Transaction non autorisée au titulaire"),
-        Map.entry("58", "❌ Accès interdit au terminal"),
-        Map.entry("59", "❌ Fraude suspecte"),
-        Map.entry("60", "❌ Marchand contacté pour retirer la carte"),
-        Map.entry("61", "❌ Limite dépassée - Autorisant retrait dépassé"),
-        Map.entry("62", "❌ Montant dépassé"),
-        Map.entry("63", "❌ Violation de sécurité"),
-        Map.entry("64", "❌ Montant original incorrect"),
-        Map.entry("65", "❌ Dépassement du nombre de retrait"),
-        Map.entry("66", "⏱️ Appel non autorisé"),
-        Map.entry("67", "❌ Message inutile"),
-        Map.entry("68", "⏱️ Timeout - Délai dépassé"),
-        Map.entry("69", "⏱️ Timeout - Concentrateur indisponible"),
-        Map.entry("70", "⏱️ Timeout - Émetteur indisponible - Banque émettrice impossible à rejoindre"),
-        Map.entry("71", "❌ Aucune réponse"),
-        Map.entry("72", "⏱️ Aucune information disponible"),
-        Map.entry("73", "❌ Code d'authentification invalide"),
-        Map.entry("74", "❌ Clé d'authentification invalide"),
-        Map.entry("75", "❌ Tentative d'authentification dépassée"),
-        Map.entry("76", "⚠️ Problème authentification"),
-        Map.entry("77", "❌ Pas d'émetteur pour signaler fraude"),
-        Map.entry("78", "❌ Demande non autorisée"),
-        Map.entry("79", "❌ Émetteur refusé l'inscription"),
-        Map.entry("80", "❌ Problème visa/mastercard"),
-        Map.entry("81", "⏱️ Transaction urgente"),
-        Map.entry("82", "❌ Délai de mise à jour dépassé"),
-        Map.entry("83", "⏱️ Impossible de localiser le tiers"),
-        Map.entry("84", "⏱️ Problème de routing"),
-        Map.entry("85", "❌ Montant incompatible"),
-        Map.entry("86", "❌ Délai commande dépassé"),
-        Map.entry("87", "❌ Message en attente reçu"),
-        Map.entry("88", "⏱️ Message non reconnue"),
-        Map.entry("89", "❌ Historique invalide"),
-        Map.entry("90", "⏱️ Problème cut-through"),
-        Map.entry("91", "⏱️ Émetteur indisponible - Banque émettrice impossible à rejoindre"),
-        Map.entry("92", "⏱️ Routage indisponible"),
-        Map.entry("93", "❌ Violation règle de transaction"),
-        Map.entry("94", "❌ Doubler transaction"),
-        Map.entry("95", "⏱️ Anomalie système"),
-        Map.entry("96", "❌ Erreur système - Dysfonctionnement du système")
+        Map.entry("00", "Approuvée - Transaction réussie"),
+        Map.entry("01", "Refuser l'émission - Contactez la banque émettrice"),
+        Map.entry("02", "Transaction invalide - Type de transaction invalide"),
+        Map.entry("03", "Commencement invalide - Numérotation commerciale invalide"),
+        Map.entry("04", "Carte invalide - Numéro de carte non exécurisé"),
+        Map.entry("05", "Déclinée - Problème général"),
+        Map.entry("08", "Approuvée (honor with identification)"),
+        Map.entry("10", "Partial approval"),
+        Map.entry("12", "Montant invalide"),
+        Map.entry("13", "Montant invalide - Argent saisie invalide"),
+        Map.entry("14", "Numéro de compte invalide"),
+        Map.entry("15", "Numérique indisponible - Établissement indisponible"),
+        Map.entry("19", "Re-envoyer la transaction"),
+        Map.entry("21", "Pas d'opération numérique"),
+        Map.entry("25", "Pas compatible à la norme"),
+        Map.entry("28", "Pas accessible - Désaccord d'accès"),
+        Map.entry("29", "Transaction non mutable"),
+        Map.entry("30", "Erreur de format - Exécution partager message long"),
+        Map.entry("31", "Banque non reconnue"),
+        Map.entry("32", "Transaction incomplète"),
+        Map.entry("33", "Carte expiré - Dépassé les délais"),
+        Map.entry("34", "Suspicion de fraude"),
+        Map.entry("35", "Marchand refusé"),
+        Map.entry("36", "Numérique restreinte - Nombre de tentatives restreint"),
+        Map.entry("37", "Appellation expiré"),
+        Map.entry("38", "Dépassement du taux de sécurité"),
+        Map.entry("39", "Compte non trouvé"),
+        Map.entry("40", "Carte perdue - Carte signalé comme perdu"),
+        Map.entry("41", "Carte volée - Carte signalé comme volée"),
+        Map.entry("42", "Aucune compte d'enregistrement"),
+        Map.entry("43", "Carte perdue/Volée - Transaction interdite"),
+        Map.entry("51", "Provision insuffisante - Fond insuffisant"),
+        Map.entry("52", "Pas de compte de chèque"),
+        Map.entry("53", "Pas de compte d'épargne"),
+        Map.entry("54", "Compte fermé"),
+        Map.entry("55", "PIN incorrect - Mauvais code PIN"),
+        Map.entry("56", "Aucune réclamation pour la carte"),
+        Map.entry("57", "Transaction non autorisée au titulaire"),
+        Map.entry("58", "Accès interdit au terminal"),
+        Map.entry("59", "Fraude suspecte"),
+        Map.entry("60", "Marchand contacté pour retirer la carte"),
+        Map.entry("61", "Limite dépassée - Autorisant retrait dépassé"),
+        Map.entry("62", "Montant dépassé"),
+        Map.entry("63", "Violation de sécurité"),
+        Map.entry("64", "Montant original incorrect"),
+        Map.entry("65", "Dépassement du nombre de retrait"),
+        Map.entry("66", "Appel non autorisé"),
+        Map.entry("67", "Message inutile"),
+        Map.entry("68", "Timeout - Délai dépassé"),
+        Map.entry("69", "Timeout - Concentrateur indisponible"),
+        Map.entry("70", "Timeout - Émetteur indisponible - Banque émettrice impossible à rejoindre"),
+        Map.entry("71", "Aucune réponse"),
+        Map.entry("72", "Aucune information disponible"),
+        Map.entry("73", "Code d'authentification invalide"),
+        Map.entry("74", "Clé d'authentification invalide"),
+        Map.entry("75", "Tentative d'authentification dépassée"),
+        Map.entry("76", "Problème authentification"),
+        Map.entry("77", "Pas d'émetteur pour signaler fraude"),
+        Map.entry("78", "Demande non autorisée"),
+        Map.entry("79", "Émetteur refusé l'inscription"),
+        Map.entry("80", "Problème visa/mastercard"),
+        Map.entry("81", "Transaction urgente"),
+        Map.entry("82", "Délai de mise à jour dépassé"),
+        Map.entry("83", "Impossible de localiser le tiers"),
+        Map.entry("84", "Problème de routing"),
+        Map.entry("85", "Montant incompatible"),
+        Map.entry("86", "Délai commande dépassé"),
+        Map.entry("87", "Message en attente reçu"),
+        Map.entry("88", "Message non reconnue"),
+        Map.entry("89", "Historique invalide"),
+        Map.entry("90", "Problème cut-through"),
+        Map.entry("91", "Émetteur indisponible - Banque émettrice impossible à rejoindre"),
+        Map.entry("92", "Routage indisponible"),
+        Map.entry("93", "Violation règle de transaction"),
+        Map.entry("94", "Doubler transaction"),
+        Map.entry("95", "Anomalie système"),
+        Map.entry("96", "Erreur système - Dysfonctionnement du système")
     );
 
     // ============================================================================
-    // 🚢 TYPES DE TRANSACTIONS PAR CANAL
+    // TYPES DE TRANSACTIONS PAR CANAL
     // ============================================================================
 
     public static final Map<String, List<String>> TRANSACTION_TYPES_BY_CHANNEL = Map.ofEntries(
@@ -680,7 +680,7 @@ public class PaymentSystemConfiguration {
     );
 
     // ============================================================================
-    // 🔒 MÉTHODES DE SÉCURITÉ PAR CANAL
+    // MÉTHODES DE SÉCURITÉ PAR CANAL
     // ============================================================================
 
     public static final Map<String, List<String>> SECURITY_METHODS_BY_CHANNEL = Map.ofEntries(
@@ -711,19 +711,19 @@ public class PaymentSystemConfiguration {
     );
 
     // ============================================================================
-    // 📈 STATUTS DE TRANSACTION
+    // STATUTS DE TRANSACTION
     // ============================================================================
 
     public static final Map<String, String> TRANSACTION_STATUSES = Map.ofEntries(
-        Map.entry("PENDING", "⏳ En attente"),
-        Map.entry("APPROVED", "✅ Approuvée"),
-        Map.entry("DECLINED", "❌ Refusée"),
-        Map.entry("FAILED", "⚠️ Échouée"),
-        Map.entry("ERROR", "❌ Erreur"),
-        Map.entry("TIMEOUT", "⏱️ Timeout"),
-        Map.entry("FRAUD_BLOCKED", "🚨 Bloquée (Fraude)"),
-        Map.entry("REVERSED", "↩️ Annulée"),
-        Map.entry("SETTLED", "💰 Acquittée"),
-        Map.entry("CHARGEBACKED", "📋 Rétrocession")
+        Map.entry("PENDING", "En attente"),
+        Map.entry("APPROVED", "Approuvée"),
+        Map.entry("DECLINED", "Refusée"),
+        Map.entry("FAILED", "Échouée"),
+        Map.entry("ERROR", "Erreur"),
+        Map.entry("TIMEOUT", "Timeout"),
+        Map.entry("FRAUD_BLOCKED", "Bloquée (Fraude)"),
+        Map.entry("REVERSED", "Annulée"),
+        Map.entry("SETTLED", "Acquittée"),
+        Map.entry("CHARGEBACKED", "Rétrocession")
     );
 }

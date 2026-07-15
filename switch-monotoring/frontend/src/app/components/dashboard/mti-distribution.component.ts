@@ -12,7 +12,7 @@ import { CardModule } from 'primeng/card';
     <p-card class="shadow-lg">
       <ng-template pTemplate="header">
         <div class="bg-gradient-to-r from-indigo-600 to-purple-500 h-12 flex items-center px-5">
-          <h3 class="text-white font-semibold text-sm">📡 Distribution des Types de Messages (MTI)</h3>
+          <h3 class="text-white font-semibold text-sm">Distribution des Types de Messages (MTI)</h3>
         </div>
       </ng-template>
 
@@ -26,7 +26,7 @@ import { CardModule } from 'primeng/card';
 
         <!-- Détails MTI -->
         <div class="space-y-2">
-          <h4 class="font-bold text-gray-800 mb-4">📊 Détails par Type</h4>
+          <h4 class="font-bold text-gray-800 mb-4">Détails par Type</h4>
           <div *ngFor="let mti of mtiDetails" 
             class="p-3 rounded border-l-4 transition-all hover:shadow-md"
             [ngClass]="getMtiClass(mti.code)">

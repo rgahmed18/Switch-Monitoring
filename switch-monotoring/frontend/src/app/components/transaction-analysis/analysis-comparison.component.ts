@@ -139,21 +139,21 @@ import { FormsModule } from '@angular/forms';
       <!-- ── INSIGHTS ─────────────────────────────────────────── -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="flex gap-3 items-start bg-card rounded-xl border border-border/40 p-4">
-          <span class="text-2xl shrink-0">🏆</span>
+          <span class="text-2xl shrink-0"></span>
           <div>
             <h4 class="font-heading font-bold text-sm tracking-tight mb-1">Meilleure Performance</h4>
             <p class="text-xs text-muted-foreground">{{ bestPerformer }}</p>
           </div>
         </div>
         <div class="flex gap-3 items-start bg-card rounded-xl border border-border/40 p-4">
-          <span class="text-2xl shrink-0">⚠️</span>
+          <span class="text-2xl shrink-0"></span>
           <div>
             <h4 class="font-heading font-bold text-sm tracking-tight mb-1">Attention Requise</h4>
             <p class="text-xs text-muted-foreground">{{ worstPerformer }}</p>
           </div>
         </div>
         <div class="flex gap-3 items-start bg-card rounded-xl border border-border/40 p-4">
-          <span class="text-2xl shrink-0">📊</span>
+          <span class="text-2xl shrink-0"></span>
           <div>
             <h4 class="font-heading font-bold text-sm tracking-tight mb-1">Variance</h4>
             <p class="text-xs text-muted-foreground">{{ variance }}  -  {{ varianceInterpretation }}</p>

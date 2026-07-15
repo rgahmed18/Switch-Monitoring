@@ -3,6 +3,10 @@
 -- Enterprise Standard Indexes from Manager
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+SET SQLBLANKLINES ON
+
 CREATE INDEX idx_autho_activity_adm_13 ON autho_activity_adm
   (
     reference_number                ASC,

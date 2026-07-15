@@ -1,5 +1,5 @@
 // ============================================================================
-// 📊 CONFIGURATION & REFERENCE DATA MODELS
+// CONFIGURATION & REFERENCE DATA MODELS
 // ============================================================================
 
 export interface PaymentSystemConfig {
@@ -20,7 +20,7 @@ export interface PaymentSystemConfig {
 }
 
 // ============================================================================
-// 💳 AUTHO_ACTIVITY_ADM TRANSACTION MODEL
+// AUTHO_ACTIVITY_ADM TRANSACTION MODEL
 // Table de production HPS PowerCARD pour le monitoring des transactions
 // Aligné EXACTEMENT sur le schéma Oracle officiel fourni par l'encadrant
 // ============================================================================

@@ -4,6 +4,10 @@
 -- Aligné sur le schéma officiel AUTHO_ACTIVITY_ADM
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+SET SQLBLANKLINES ON
+
 -- ============================================================================
 -- VUE: VW_AUTHORIZATIONS
 -- Transactions d'autorisation avec statut et codes d'action

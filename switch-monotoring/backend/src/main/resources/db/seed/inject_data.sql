@@ -18,12 +18,16 @@
 --    Statut : Approuve 65% | Refuse 30% | Reversal 5%
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+
 SET SERVEROUTPUT ON SIZE UNLIMITED
 SET FEEDBACK    OFF
 SET VERIFY      OFF
 SET ECHO        OFF
 SET TIMING      ON
 SET DEFINE      OFF
+SET SQLBLANKLINES ON
 
 PROMPT ============================================================
 PROMPT   ETAPE 1/3 : Purge de la table AUTHO_ACTIVITY_ADM

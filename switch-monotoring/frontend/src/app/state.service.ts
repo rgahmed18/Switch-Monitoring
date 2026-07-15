@@ -125,7 +125,7 @@ const TIMEOUT_CODES   = new Set(['906','907','908','909','910','911','912','98']
 const PROVISION_CODES = new Set(['051','51','061','61','65','065']);
 
 // ============================================================================
-// 🔍 FILTER STATE INTERFACE
+// FILTER STATE INTERFACE
 // ============================================================================
 
 export interface FilterState {
@@ -178,7 +178,7 @@ export interface FilterState {
 }
 
 // ============================================================================
-// 📊 REFERENCE DATA FOR DROPDOWNS & CHARTS
+// REFERENCE DATA FOR DROPDOWNS & CHARTS
 // ============================================================================
 
 export interface ReferenceData {
@@ -199,7 +199,7 @@ export interface ReferenceData {
 })
 export class AppStateService {
   // ============================================================================
-  // 🌐 GLOBAL APPLICATION STATE
+  // GLOBAL APPLICATION STATE
   // ============================================================================
 
   // Live data status
@@ -209,7 +209,7 @@ export class AppStateService {
   public lang = signal<'fr' | 'en'>('en');
 
   // ============================================================================
-  // 🔍 USER FILTERS
+  // USER FILTERS
   // ============================================================================
 
   // Global transaction filters
@@ -244,7 +244,7 @@ export class AppStateService {
   });
 
   // ============================================================================
-  // 📊 SYSTEM CONFIGURATION (ISO 8583, CODES, ETC)
+  // SYSTEM CONFIGURATION (ISO 8583, CODES, ETC)
   // ============================================================================
 
   // Complete payment system configuration from backend
@@ -265,7 +265,7 @@ export class AppStateService {
   });
 
   // ============================================================================
-  // 📈 LOADING & UI STATE
+  // LOADING & UI STATE
   // ============================================================================
 
   public isLoadingConfig = signal<boolean>(false);
@@ -273,7 +273,7 @@ export class AppStateService {
   public configLastUpdated = signal<Date | null>(null);
 
   // ============================================================================
-  // 🔄 METHODS
+  // METHODS
   // ============================================================================
 
   constructor() {

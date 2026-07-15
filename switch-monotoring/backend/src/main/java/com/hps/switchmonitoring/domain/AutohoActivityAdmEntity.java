@@ -33,54 +33,54 @@ public class AutohoActivityAdmEntity {
 
   // ========== CLÉS PRIMAIRES COMPOSÉES ==========
   @Id
-  @Column(name = "reference_number", length = 12)
+  @Column(name = "reference_number", length = 12, columnDefinition = "CHAR(12 CHAR)")
   private String referenceNumber;
 
   @Id
-  @Column(name = "internal_stan", length = 6)
+  @Column(name = "internal_stan", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String internalStan;
 
   @Id
-  @Column(name = "external_stan", length = 6)
+  @Column(name = "external_stan", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String externalStan;
 
   @Id
-  @Column(name = "routing_code", length = 6)
+  @Column(name = "routing_code", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String routingCode;
 
   @Id
-  @Column(name = "capture_code", length = 6)
+  @Column(name = "capture_code", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String captureCode;
 
   // ========== IDENTIFICATION DE LA TRANSACTION ==========
-  @Column(name = "message_type", length = 4)
+  @Column(name = "message_type", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String messageType;
 
-  @Column(name = "function_code", length = 3)
+  @Column(name = "function_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String functionCode;
 
-  @Column(name = "processing_code", length = 2)
+  @Column(name = "processing_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String processingCode;
 
-  @Column(name = "source_account_code", length = 2)
+  @Column(name = "source_account_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String sourceAccountCode;
 
-  @Column(name = "destination_account_code", length = 2)
+  @Column(name = "destination_account_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String destinationAccountCode;
 
-  @Column(name = "action_code", length = 3)
+  @Column(name = "action_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String actionCode;
 
-  @Column(name = "original_action_code", length = 3)
+  @Column(name = "original_action_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String originalActionCode;
 
   @Column(name = "issuer_action_code", length = 6)
   private String issuerActionCode;
 
-  @Column(name = "event_code", length = 3)
+  @Column(name = "event_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String eventCode;
 
-  @Column(name = "reason_code", length = 4)
+  @Column(name = "reason_code", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String reasonCode;
 
   @Column(name = "reject_code", length = 4)
@@ -96,7 +96,7 @@ public class AutohoActivityAdmEntity {
   private String transactionId;
 
   // ========== RÉSEAU / ROUTAGE ==========
-  @Column(name = "network_code", length = 2)
+  @Column(name = "network_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String networkCode;
 
   @Column(name = "network_id", length = 4)
@@ -105,25 +105,25 @@ public class AutohoActivityAdmEntity {
   @Column(name = "network_data", length = 12)
   private String networkData;
 
-  @Column(name = "forwarding_country_code", length = 3)
+  @Column(name = "forwarding_country_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String forwardingCountryCode;
 
   @Column(name = "forwarding_institution_code", length = 11)
   private String forwardingInstitutionCode;
 
-  @Column(name = "forwarding_bank", length = 6)
+  @Column(name = "forwarding_bank", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String forwardingBank;
 
   @Column(name = "receiving_institution", length = 11)
   private String receivingInstitution;
 
-  @Column(name = "acquiring_country_code", length = 3)
+  @Column(name = "acquiring_country_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String acquiringCountryCode;
 
   @Column(name = "acquirer_institution_code", length = 11)
   private String acquirerInstitutionCode;
 
-  @Column(name = "acquirer_bank", length = 6)
+  @Column(name = "acquirer_bank", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String acquirerBank;
 
   // ========== CARTE ==========
@@ -133,19 +133,19 @@ public class AutohoActivityAdmEntity {
   @Column(name = "card_sequence_number")
   private Integer cardSequenceNumber;
 
-  @Column(name = "service_code", length = 3)
+  @Column(name = "service_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String serviceCode;
 
-  @Column(name = "card_type", length = 2)
+  @Column(name = "card_type", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String cardType;
 
-  @Column(name = "card_level", length = 1)
+  @Column(name = "card_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String cardLevel;
 
-  @Column(name = "product_code", length = 3)
+  @Column(name = "product_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String productCode;
 
-  @Column(name = "vip_level", length = 1)
+  @Column(name = "vip_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String vipLevel;
 
   @Column(name = "start_expiry_date")
@@ -192,7 +192,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "cash_back_amount", precision = 18, scale = 3)
   private BigDecimal cashBackAmount;
 
-  @Column(name = "transaction_currency", length = 3)
+  @Column(name = "transaction_currency", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String transactionCurrency;
 
   @Column(name = "replacement_amount", precision = 18, scale = 3)
@@ -201,7 +201,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "billing_amount", precision = 18, scale = 3)
   private BigDecimal billingAmount;
 
-  @Column(name = "billing_currency", length = 3)
+  @Column(name = "billing_currency", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String billingCurrency;
 
   @Column(name = "conversion_rate", precision = 14, scale = 6)
@@ -211,7 +211,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "iss_settlement_amount", precision = 18, scale = 3)
   private BigDecimal issSettlementAmount;
 
-  @Column(name = "iss_settlement_currency", length = 3)
+  @Column(name = "iss_settlement_currency", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String issSettlementCurrency;
 
   @Column(name = "iss_settlement_date")
@@ -230,7 +230,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "acq_settlement_amount", precision = 18, scale = 3)
   private BigDecimal acqSettlementAmount;
 
-  @Column(name = "acq_settlement_currency", length = 3)
+  @Column(name = "acq_settlement_currency", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String acqSettlementCurrency;
 
   @Column(name = "acq_settlement_date")
@@ -249,7 +249,7 @@ public class AutohoActivityAdmEntity {
   private BigDecimal transactionFee;
 
   // ========== ACCEPTEUR / TERMINAL (POS) ==========
-  @Column(name = "card_acceptor_activity", length = 4)
+  @Column(name = "card_acceptor_activity", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String cardAcceptorActivity;
 
   @Column(name = "card_acceptor_term_id", length = 15)
@@ -264,17 +264,17 @@ public class AutohoActivityAdmEntity {
   @Column(name = "pos_entry_mode", length = 4)
   private String posEntryMode;
 
-  @Column(name = "pos_condition_code", length = 2)
+  @Column(name = "pos_condition_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String posConditionCode;
 
-  @Column(name = "pos_data", length = 12)
+  @Column(name = "pos_data", length = 12, columnDefinition = "CHAR(12 CHAR)")
   private String posData;
 
-  @Column(name = "tcc", length = 1)
+  @Column(name = "tcc", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String tcc;
 
   // ========== COMPTES SOURCE / DESTINATION ==========
-  @Column(name = "source_account_entity_code", length = 2)
+  @Column(name = "source_account_entity_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String sourceAccountEntityCode;
 
   @Column(name = "source_account_entity_id", length = 24)
@@ -283,7 +283,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "source_account_sequence")
   private Integer sourceAccountSequence;
 
-  @Column(name = "source_account_type", length = 2)
+  @Column(name = "source_account_type", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String sourceAccountType;
 
   @Column(name = "source_account_number", length = 24)
@@ -292,7 +292,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "source_account_entity_level")
   private Integer sourceAccountEntityLevel;
 
-  @Column(name = "destination_account_entity_cod", length = 2)
+  @Column(name = "destination_account_entity_cod", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String destinationAccountEntityCod;
 
   @Column(name = "destination_account_entity_id", length = 24)
@@ -301,7 +301,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "destination_account_sequence")
   private Integer destinationAccountSequence;
 
-  @Column(name = "destination_account_type", length = 2)
+  @Column(name = "destination_account_type", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String destinationAccountType;
 
   @Column(name = "destination_account_number", length = 24)
@@ -310,11 +310,11 @@ public class AutohoActivityAdmEntity {
   @Column(name = "destination_account_entity_lev")
   private Integer destinationAccountEntityLev;
 
-  @Column(name = "issuing_bank", length = 6)
+  @Column(name = "issuing_bank", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String issuingBank;
 
   // ========== CRÉDIT / LIMITE ==========
-  @Column(name = "cr_currency_code", length = 3)
+  @Column(name = "cr_currency_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String crCurrencyCode;
 
   @Column(name = "cr_credit_limit", precision = 18, scale = 3)
@@ -326,7 +326,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "cr_loan_limit", precision = 18, scale = 3)
   private BigDecimal crLoanLimit;
 
-  @Column(name = "cr_vip_level", length = 1)
+  @Column(name = "cr_vip_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String crVipLevel;
 
   @Column(name = "cr_credit_cur_bal", precision = 18, scale = 3)
@@ -338,7 +338,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "cr_loan_cur_bal", precision = 18, scale = 3)
   private BigDecimal crLoanCurBal;
 
-  @Column(name = "cr_response_code", length = 3)
+  @Column(name = "cr_response_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String crResponseCode;
 
   @Column(name = "cr_pending_aut_credit", precision = 18, scale = 3)
@@ -388,16 +388,16 @@ public class AutohoActivityAdmEntity {
   private Integer loyaltyPointsRedemption;
 
   // ========== CONFIGURATION PRODUITS ==========
-  @Column(name = "services_setup_code", length = 4)
+  @Column(name = "services_setup_code", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String servicesSetupCode;
 
-  @Column(name = "product_currency_code", length = 3)
+  @Column(name = "product_currency_code", length = 3, columnDefinition = "CHAR(3 CHAR)")
   private String productCurrencyCode;
 
-  @Column(name = "period_code", length = 4)
+  @Column(name = "period_code", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String periodCode;
 
-  @Column(name = "period_type", length = 1)
+  @Column(name = "period_type", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String periodType;
 
   @Column(name = "period_value")
@@ -504,51 +504,51 @@ public class AutohoActivityAdmEntity {
   @Column(name = "address_verification_data", length = 40)
   private String addressVerificationData;
 
-  @Column(name = "cps_aci", length = 1)
+  @Column(name = "cps_aci", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String cpsAci;
 
-  @Column(name = "cps_transaction_id", length = 15)
+  @Column(name = "cps_transaction_id", length = 15, columnDefinition = "CHAR(15 CHAR)")
   private String cpsTransactionId;
 
-  @Column(name = "cps_validation_code", length = 4)
+  @Column(name = "cps_validation_code", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String cpsValidationCode;
 
-  @Column(name = "authorization_code", length = 6)
+  @Column(name = "authorization_code", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String authorizationCode;
 
   @Column(name = "original_authorization_code", length = 10)
   private String originalAuthorizationCode;
 
-  @Column(name = "authorization_source", length = 2)
+  @Column(name = "authorization_source", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String authorizationSource;
 
   @Column(name = "authorization_length")
   private Integer authorizationLength;
 
   // ========== FLAGS / STATUTS ==========
-  @Column(name = "autho_flag", length = 1)
+  @Column(name = "autho_flag", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String authoFlag;
 
-  @Column(name = "reversal_flag", length = 1)
+  @Column(name = "reversal_flag", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String reversalFlag;
 
-  @Column(name = "transaction_flag", length = 1)
+  @Column(name = "transaction_flag", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String transactionFlag;
 
-  @Column(name = "matching_status", length = 1)
+  @Column(name = "matching_status", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String matchingStatus;
 
   @Column(name = "matching_date")
   private LocalDate matchingDate;
 
-  @Column(name = "matching_level", length = 1)
+  @Column(name = "matching_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String matchingLevel;
 
   @Column(name = "matching_date_purge")
   private LocalDate matchingDatePurge;
 
   // ========== REVERSALS ==========
-  @Column(name = "reversal_stan", length = 6)
+  @Column(name = "reversal_stan", length = 6, columnDefinition = "CHAR(6 CHAR)")
   private String reversalStan;
 
   @Column(name = "reversal_transaction_date")
@@ -558,31 +558,31 @@ public class AutohoActivityAdmEntity {
   private LocalDateTime originalTransactionDateTime;
 
   // ========== NIVEAUX / CONTEXTE ==========
-  @Column(name = "balance_level", length = 1)
+  @Column(name = "balance_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String balanceLevel;
 
-  @Column(name = "shadow_account_level", length = 1)
+  @Column(name = "shadow_account_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String shadowAccountLevel;
 
-  @Column(name = "host_level", length = 1)
+  @Column(name = "host_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String hostLevel;
 
-  @Column(name = "client_level", length = 1)
+  @Column(name = "client_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String clientLevel;
 
-  @Column(name = "exception_level", length = 1)
+  @Column(name = "exception_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String exceptionLevel;
 
-  @Column(name = "action_translation_level", length = 1)
+  @Column(name = "action_translation_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String actionTranslationLevel;
 
-  @Column(name = "card_limit_exception_level", length = 1)
+  @Column(name = "card_limit_exception_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String cardLimitExceptionLevel;
 
-  @Column(name = "vip_action_translation_level", length = 1)
+  @Column(name = "vip_action_translation_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String vipActionTranslationLevel;
 
-  @Column(name = "autho_period_level", length = 1)
+  @Column(name = "autho_period_level", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String authoPeriodLevel;
 
   // ========== DONNÉES ADDITIONNELLES ==========
@@ -595,7 +595,7 @@ public class AutohoActivityAdmEntity {
   @Column(name = "limit_amount_before_trn", precision = 18, scale = 3)
   private BigDecimal limitAmountBeforeTrn;
 
-  @Column(name = "limit_index", length = 4)
+  @Column(name = "limit_index", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String limitIndex;
 
   @Column(name = "limit_id")
@@ -604,10 +604,10 @@ public class AutohoActivityAdmEntity {
   @Column(name = "private_data_1", length = 44)
   private String privateData1;
 
-  @Column(name = "acquirer_resource_code", length = 2)
+  @Column(name = "acquirer_resource_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String acquirerResourceCode;
 
-  @Column(name = "issuer_resource_code", length = 2)
+  @Column(name = "issuer_resource_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String issuerResourceCode;
 
   @Column(name = "private_tlv_data", length = 1024)
@@ -635,16 +635,16 @@ public class AutohoActivityAdmEntity {
   @Column(name = "uf_action_date")
   private LocalDate ufActionDate;
 
-  @Column(name = "uf_file_update_code", length = 1)
+  @Column(name = "uf_file_update_code", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String ufFileUpdateCode;
 
   @Column(name = "uf_filename", length = 20)
   private String ufFilename;
 
-  @Column(name = "uf_purge_date", length = 4)
+  @Column(name = "uf_purge_date", length = 4, columnDefinition = "CHAR(4 CHAR)")
   private String ufPurgeDate;
 
-  @Column(name = "uf_action_code", length = 2)
+  @Column(name = "uf_action_code", length = 2, columnDefinition = "CHAR(2 CHAR)")
   private String ufActionCode;
 
   @Column(name = "uf_file_record", length = 256)
@@ -653,6 +653,6 @@ public class AutohoActivityAdmEntity {
   @Column(name = "time_stamp_plus_message", length = 14)
   private String timeStampPlusMessage;
 
-  @Column(name = "origine_code", length = 1)
+  @Column(name = "origine_code", length = 1, columnDefinition = "CHAR(1 CHAR)")
   private String origineCode;
 }

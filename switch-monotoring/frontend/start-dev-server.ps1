@@ -18,16 +18,16 @@ if ($portProcess) {
             $pid = [int]$matches[1]
             try {
                 taskkill /PID $pid /F | Out-Null
-                Write-Host "   ✓ Killed process PID $pid" -ForegroundColor Green
+                Write-Host "   Killed process PID $pid" -ForegroundColor Green
                 Start-Sleep -Milliseconds 500
             }
             catch {
-                Write-Host "   ⚠ Could not kill PID $pid: $_" -ForegroundColor Yellow
+                Write-Host "   Could not kill PID $pid: $_" -ForegroundColor Yellow
             }
         }
     }
 } else {
-    Write-Host "   ✓ No process found on port 4200" -ForegroundColor Green
+    Write-Host "   No process found on port 4200" -ForegroundColor Green
 }
 
 # Step 2: Clear Angular cache
@@ -36,10 +36,10 @@ $cachePath = ".\.angular"
 if (Test-Path $cachePath) {
     try {
         Remove-Item -Recurse -Force $cachePath -ErrorAction SilentlyContinue
-        Write-Host "   ✓ Cache cleared" -ForegroundColor Green
+        Write-Host "   Cache cleared" -ForegroundColor Green
     }
     catch {
-        Write-Host "   ⚠ Could not clear cache (folder in use)" -ForegroundColor Yellow
+        Write-Host "   Could not clear cache (folder in use)" -ForegroundColor Yellow
     }
 }
 
@@ -49,7 +49,7 @@ $timeout = 0
 while ($timeout -lt 10) {
     $portCheck = netstat -ano 2>$null | findstr :4200 | findstr LISTENING
     if (-not $portCheck) {
-        Write-Host "   ✓ Port 4200 is now available" -ForegroundColor Green
+        Write-Host "   Port 4200 is now available" -ForegroundColor Green
         break
     }
     Start-Sleep -Seconds 1

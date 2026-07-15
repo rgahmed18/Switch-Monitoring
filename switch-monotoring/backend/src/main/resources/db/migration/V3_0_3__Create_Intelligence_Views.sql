@@ -8,6 +8,9 @@
 --   3. Intelligence EMV/Chip (analyse TVR, ATC, CVM pour la fraude)
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+SET SQLBLANKLINES ON
 
 -- ============================================================================
 -- VUE 1 : Réconciliation Multi-Devise
@@ -192,7 +195,7 @@ SELECT
         WHEN a.transaction_local_date IS NOT NULL
          AND a.transmission_date_and_time IS NOT NULL
         THEN ABS(ROUND(
-            (a.transmission_date_and_time - CAST(a.transaction_local_date AS TIMESTAMP))
+            (a.transmission_date_and_time - a.transaction_local_date)
             * 24 * 60, 0))
         ELSE NULL
     END AS drift_minutes,
@@ -202,13 +205,13 @@ SELECT
         WHEN a.transaction_local_date IS NULL
           OR a.transmission_date_and_time IS NULL
         THEN 'NO_DATA'
-        WHEN ABS((a.transmission_date_and_time - CAST(a.transaction_local_date AS TIMESTAMP))
+        WHEN ABS((a.transmission_date_and_time - a.transaction_local_date)
              * 24 * 60) > 1440
         THEN 'DRIFT_CRITIQUE'
-        WHEN ABS((a.transmission_date_and_time - CAST(a.transaction_local_date AS TIMESTAMP))
+        WHEN ABS((a.transmission_date_and_time - a.transaction_local_date)
              * 24 * 60) > 180
         THEN 'DRIFT_ELEVE'
-        WHEN ABS((a.transmission_date_and_time - CAST(a.transaction_local_date AS TIMESTAMP))
+        WHEN ABS((a.transmission_date_and_time - a.transaction_local_date)
              * 24 * 60) > 60
         THEN 'DRIFT_MODERE'
         ELSE 'NORMAL'

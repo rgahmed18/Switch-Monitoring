@@ -10,6 +10,9 @@
 --   - Tout le milieu remplacé par 'X'
 -- ============================================================================
 
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER SESSION SET CURRENT_SCHEMA = PFE_SW_MON;
+SET SQLBLANKLINES ON
 
 -- ============================================================================
 -- SECTION 1 : FONCTION DE MASQUAGE RÉUTILISABLE

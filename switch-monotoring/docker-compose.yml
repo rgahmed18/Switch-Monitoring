@@ -1,4 +1,35 @@
 services:
+  # Oracle Database
+  oracle:
+    image: gvenzl/oracle-free:23-slim-faststart
+    environment:
+      ORACLE_PASSWORD: ${DB_PASSWORD:-PFE_SW_MON_PWD}
+      APP_USER: ${DB_USERNAME:-PFE_SW_MON}
+      APP_USER_PASSWORD: ${DB_PASSWORD:-PFE_SW_MON_PWD}
+      LANG: C.utf8
+      TZ: Africa/Casablanca
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./backend/src/main/resources/db/init/V0_0_0__Init_Admin_User.sql:/container-entrypoint-initdb.d/01_init_admin_user.sql:ro
+      - ./backend/src/main/resources/db/init/V0_0_1__Create_Powercard_Tablespaces.sql:/container-entrypoint-initdb.d/02_create_tablespaces.sql:ro
+      - ./backend/src/main/resources/db/init/V0_0_2__Grant_Powercard_Quotas.sql:/container-entrypoint-initdb.d/03_grant_quotas.sql:ro
+      - ./backend/src/main/resources/db/migration/V3_0_0__Create_AUTHO_ACTIVITY_ADM.sql:/container-entrypoint-initdb.d/04_create_autho_activity_adm.sql:ro
+      - ./backend/src/main/resources/db/migration/V3_0_1__Create_AUTHO_ACTIVITY_ADM_Indexes.sql:/container-entrypoint-initdb.d/05_create_indexes.sql:ro
+      - ./backend/src/main/resources/db/migration/V3_0_2__Create_AUTHO_ACTIVITY_ADM_Views.sql:/container-entrypoint-initdb.d/06_create_views.sql:ro
+      - ./backend/src/main/resources/db/migration/V3_0_3__Create_Intelligence_Views.sql:/container-entrypoint-initdb.d/07_create_intelligence_views.sql:ro
+      - ./backend/src/main/resources/db/migration/V4_0_0__Create_Archive_Table.sql:/container-entrypoint-initdb.d/08_create_archive_table.sql:ro
+      - ./backend/src/main/resources/db/migration/V5_0_0__PCI_DSS_PAN_Masking.sql:/container-entrypoint-initdb.d/09_pci_dss_pan_masking.sql:ro
+      - ./backend/src/main/resources/db/migration/V6_0_0__Create_Alert_Sla_Socket_Tables.sql:/container-entrypoint-initdb.d/10_create_alert_sla_socket_tables.sql:ro
+      - ./backend/src/main/resources/db/seed/inject_data.sql:/container-entrypoint-initdb.d/11_seed_data.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
   # Zookeeper (requis par Kafka)
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -62,7 +93,46 @@ services:
     profiles:
       - load-test
 
+  # Backend Spring Boot
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      oracle:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: Africa/Casablanca
+      DB_URL: jdbc:oracle:thin:@//oracle:1521/FREEPDB1
+      DB_USERNAME: ${DB_USERNAME:-PFE_SW_MON}
+      DB_PASSWORD: ${DB_PASSWORD:-PFE_SW_MON_PWD}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM: ${MAIL_FROM}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-true}
+      MAIL_STARTTLS_ENABLE: ${MAIL_STARTTLS_ENABLE:-true}
+      MAIL_STARTTLS_REQUIRED: ${MAIL_STARTTLS_REQUIRED:-true}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
+
+  # Frontend Angular (servi par nginx, proxy /api/v1 vers le backend)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
 volumes:
+  oracle-data:
   zk-data:
   zk-logs:
   kafka-data:

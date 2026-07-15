@@ -19,7 +19,7 @@ import { TransactionStatsService } from '../../services/transaction-stats.servic
             <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               {{ 'insights.approvalRate' | translate }}
             </p>
-            <span class="text-lg">✓</span>
+            <span class="text-lg"></span>
           </div>
           <p class="text-2xl font-bold font-mono tabular-nums text-foreground">{{ approvalRate }}%</p>
           <p class="text-xs text-muted-foreground mt-1">
@@ -37,7 +37,7 @@ import { TransactionStatsService } from '../../services/transaction-stats.servic
             <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               {{ 'insights.avgLatency' | translate }}
             </p>
-            <span class="text-lg">⚡</span>
+            <span class="text-lg"></span>
           </div>
           <p class="text-2xl font-bold font-mono tabular-nums text-foreground">{{ avgLatency }}ms</p>
           <p class="text-xs text-muted-foreground mt-1">{{ 'insights.slaTarget' | translate }}</p>
@@ -55,7 +55,7 @@ import { TransactionStatsService } from '../../services/transaction-stats.servic
             <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               {{ 'insights.volume' | translate }}
             </p>
-            <span class="text-lg">💰</span>
+            <span class="text-lg"></span>
           </div>
           <p class="text-2xl font-bold font-mono tabular-nums text-foreground">
             {{ totalVolume | currency }}
@@ -73,7 +73,7 @@ import { TransactionStatsService } from '../../services/transaction-stats.servic
             <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               {{ 'insights.topChannel' | translate }}
             </p>
-            <span class="text-lg">📱</span>
+            <span class="text-lg"></span>
           </div>
           <p class="text-2xl font-bold font-mono tabular-nums text-foreground">{{ topChannel }}</p>
           <p class="text-xs text-muted-foreground mt-1">{{ topChannelCount }} transactions</p>

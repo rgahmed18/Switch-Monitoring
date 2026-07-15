@@ -66,7 +66,7 @@ export class ApiService {
   ) {}
 
   // ============================================================================
-  // 💻 AUTHO_ACTIVITY_ADM TRANSACTION ENDPOINTS
+  // AUTHO_ACTIVITY_ADM TRANSACTION ENDPOINTS
   // ============================================================================
 
   /**
@@ -647,7 +647,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🚨 ALERTS & SLA MANAGEMENT
+  // ALERTS & SLA MANAGEMENT
   // ============================================================================
 
   getAlerts(): Observable<AlertEvent[]> {
@@ -667,7 +667,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🌍 ZONES & COUNTRIES (GÉOGRAPHIE)
+  // ZONES & COUNTRIES (GÉOGRAPHIE)
   // ============================================================================
 
   /**
@@ -699,7 +699,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🏦 BANKS (BANQUES)
+  // BANKS (BANQUES)
   // ============================================================================
 
   /**
@@ -724,7 +724,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 📊 TRANSACTION TYPES & MTI CODES
+  // TRANSACTION TYPES & MTI CODES
   // ============================================================================
 
   /**
@@ -749,7 +749,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // ✅ ISO 8583 RESPONSE CODES
+  // ISO 8583 RESPONSE CODES
   // ============================================================================
 
   /**
@@ -776,7 +776,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🔒 SECURITY METHODS
+  // SECURITY METHODS
   // ============================================================================
 
   /**
@@ -794,7 +794,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 📈 TRANSACTION STATUSES
+  // TRANSACTION STATUSES
   // ============================================================================
 
   /**
@@ -805,7 +805,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🎯 COMPLETE SYSTEM CONFIGURATION (ONE CALL)
+  // COMPLETE SYSTEM CONFIGURATION (ONE CALL)
   // ============================================================================
 
   /**
@@ -824,7 +824,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🛣️ CHANNEL-SPECIFIC TRANSACTION ENDPOINTS
+  // CHANNEL-SPECIFIC TRANSACTION ENDPOINTS
   // ============================================================================
 
   /**
@@ -849,7 +849,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🧠 INTELLIGENCE MONÉTIQUE  -  MonetixAnalyticsController
+  // INTELLIGENCE MONÉTIQUE  -  MonetixAnalyticsController
   // ============================================================================
 
   private readonly ANALYTICS_URL = `${API_BASE_URL}/analytics`;
@@ -932,7 +932,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🌍 GEO ANALYTICS  -  Filtrage bidirectionnel Pays ↔ Devise
+  // GEO ANALYTICS  -  Filtrage bidirectionnel Pays ↔ Devise
   // ============================================================================
 
   private readonly GEO_URL    = `${API_BASE_URL}/geo`;
@@ -971,7 +971,7 @@ export class ApiService {
   }
 
   // ============================================================================
-  // 🗺️ ZONE HEALTH  -  Heatmap de santé géographique
+  // ZONE HEALTH  -  Heatmap de santé géographique
   // ============================================================================
 
   /** Heatmap complète : toutes les zones pour une date */

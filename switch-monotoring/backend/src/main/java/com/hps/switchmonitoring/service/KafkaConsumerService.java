@@ -83,7 +83,7 @@ public class KafkaConsumerService {
       logger.info("Transaction traitée avec succès: {}", event.getExternalId());
 
     } catch (Exception e) {
-      logger.error("❌ Erreur lors de la consommation de la transaction: {}", event.getExternalId(), e);
+      logger.error("Erreur lors de la consommation de la transaction: {}", event.getExternalId(), e);
       kafkaErrorHandler.handleTransactionError(event, e, partition, offset);
     }
   }
@@ -109,7 +109,7 @@ public class KafkaConsumerService {
       logger.debug("Événement de traitement terminé: {}", event.getExternalId());
 
     } catch (Exception e) {
-      logger.error("❌ Erreur lors du traitement de l'événement: {}", event.getExternalId(), e);
+      logger.error("Erreur lors du traitement de l'événement: {}", event.getExternalId(), e);
       kafkaErrorHandler.handleProcessingEventError(event, e, partition, 0);
     }
   }
@@ -144,7 +144,7 @@ public class KafkaConsumerService {
           event.getId(), event.getAlertType(), severity);
 
     } catch (Exception e) {
-      logger.error("❌ Erreur lors de la consommation de l'alerte: {}", event.getId(), e);
+      logger.error("Erreur lors de la consommation de l'alerte: {}", event.getId(), e);
       kafkaErrorHandler.handleAlertError(event, e, partition, offset);
     }
   }
@@ -173,7 +173,7 @@ public class KafkaConsumerService {
       logger.debug("Log socket sauvegardé en base de données: {}", savedLog.getId());
 
     } catch (Exception e) {
-      logger.error("❌ Erreur lors de la consommation du log socket: {}", event.getTransactionId(), e);
+      logger.error("Erreur lors de la consommation du log socket: {}", event.getTransactionId(), e);
       kafkaErrorHandler.handleSocketLogError(event, e, partition, offset);
     }
   }

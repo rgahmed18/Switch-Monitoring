@@ -18,7 +18,7 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr :4200 ^| findstr LISTENING') 
     echo   - Found process PID %%a, terminating...
     taskkill /PID %%a /F 2>nul
     if errorlevel 0 (
-        echo   ✓ Process %%a terminated
+        echo   Process %%a terminated
         timeout /t 1 /nobreak >nul
     )
 )
@@ -28,12 +28,12 @@ echo [2/4] Clearing Angular cache...
 if exist ".angular" (
     rmdir /s /q ".angular" 2>nul
     if not exist ".angular" (
-        echo   ✓ Cache cleared
+        echo   Cache cleared
     ) else (
-        echo   ⚠ Cache folder still in use (will be cleaned on next run)
+        echo   Cache folder still in use (will be cleaned on next run)
     )
 ) else (
-    echo   ✓ No cache found
+    echo   No cache found
 )
 
 REM Step 3: Wait for port to be free
@@ -42,11 +42,11 @@ set timeout=0
 :wait_loop
 netstat -ano | findstr :4200 | findstr LISTENING >nul
 if "%errorlevel%"=="1" (
-    echo   ✓ Port 4200 is now available
+    echo   Port 4200 is now available
     goto :start_server
 )
 if "%timeout%"=="10" (
-    echo   ⚠ Port still in use, attempting to start anyway...
+    echo   Port still in use, attempting to start anyway...
     goto :start_server
 )
 timeout /t 1 /nobreak >nul
@@ -58,8 +58,8 @@ REM Step 4: Start the server
 echo [4/4] Starting Angular dev server...
 echo.
 echo ================================================================================
-echo   ✓ Server starting http://localhost:4200/
-echo   ✓ Press Ctrl+C to stop
+echo   Server starting http://localhost:4200/
+echo   Press Ctrl+C to stop
 echo ================================================================================
 echo.
 

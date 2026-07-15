@@ -239,7 +239,7 @@ interface DisplayAlert {
                       class="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-md border
                              transition-colors cursor-pointer select-none
                              bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20">
-                ✗ Non résolu
+                Non résolu
               </button>
             </div>
 
@@ -308,7 +308,7 @@ interface DisplayAlert {
                   <p class="text-sm font-semibold text-muted-foreground truncate">{{ alert.title }}</p>
                   <span class="text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0
                                bg-green-500/10 text-green-400 border border-green-500/30">
-                    ✓ RÉSOLU
+                    RÉSOLU
                   </span>
                   <span class="text-[9px] font-bold px-1.5 py-0.5 rounded shrink-0"
                         [ngClass]="{
@@ -330,7 +330,7 @@ interface DisplayAlert {
                              transition-colors cursor-pointer select-none
                              bg-green-500/10 text-green-400 border-green-500/30 hover:bg-red-500/10
                              hover:text-red-400 hover:border-red-500/30">
-                ✓ Résolu
+                Résolu
               </button>
             </div>
 

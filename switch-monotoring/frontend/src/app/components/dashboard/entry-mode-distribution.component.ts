@@ -12,7 +12,7 @@ import { CardModule } from 'primeng/card';
     <p-card class="shadow-lg">
       <ng-template pTemplate="header">
         <div class="bg-gradient-to-r from-violet-600 to-indigo-500 h-32 flex items-center px-6">
-          <h3 class="text-white font-bold text-lg">🔐 Mode d'Entrée - Distribution (DE 22)</h3>
+          <h3 class="text-white font-bold text-lg">Mode d'Entrée - Distribution (DE 22)</h3>
         </div>
       </ng-template>
 
@@ -26,7 +26,7 @@ import { CardModule } from 'primeng/card';
 
         <!-- Détails -->
         <div class="space-y-3">
-          <h4 class="font-bold text-gray-800 mb-4">📊 Mode d'Entrée</h4>
+          <h4 class="font-bold text-gray-800 mb-4">Mode d'Entrée</h4>
           <div *ngFor="let mode of entryModes" 
             class="p-3 rounded border-l-4 transition-all"
             [ngClass]="getModeClass(mode.code)">
@@ -53,21 +53,21 @@ import { CardModule } from 'primeng/card';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t">
         <!-- Paiements Contactles -->
         <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-          <div class="text-gray-600 text-sm font-bold mb-2">📱 Sans Contact</div>
+          <div class="text-gray-600 text-sm font-bold mb-2">Sans Contact</div>
           <div class="font-bold text-2xl text-green-700">{{ contactlessPercentage }}%</div>
           <div class="text-xs text-gray-600">{{ contactlessCount }} transactions - Plus sûr</div>
         </div>
 
         <!-- Paiements Chip -->
         <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <div class="text-gray-600 text-sm font-bold mb-2">💳 Chip/EMV</div>
+          <div class="text-gray-600 text-sm font-bold mb-2">Chip/EMV</div>
           <div class="font-bold text-2xl text-blue-700">{{ chipPercentage }}%</div>
           <div class="text-xs text-gray-600">{{ chipCount }} transactions</div>
         </div>
 
         <!-- Paiements Manuels -->
         <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <div class="text-gray-600 text-sm font-bold mb-2">⌨️ Manuel/Mag</div>
+          <div class="text-gray-600 text-sm font-bold mb-2">Manuel/Mag</div>
           <div class="font-bold text-2xl text-blue-700">{{ manualPercentage }}%</div>
           <div class="text-xs text-gray-600">{{ manualCount }} transactions - Moins sûr</div>
         </div>
@@ -75,7 +75,7 @@ import { CardModule } from 'primeng/card';
 
       <!-- Insights Sécurité -->
       <div class="bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-300 rounded-lg p-4 mt-6">
-        <h4 class="font-bold text-purple-900 mb-3">🔒 Insights Sécurité</h4>
+        <h4 class="font-bold text-purple-900 mb-3">Insights Sécurité</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <span class="text-gray-700">Utilisation 3-D Secure:</span>
@@ -98,7 +98,7 @@ import { CardModule } from 'primeng/card';
 
       <!-- Recommandations -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-        <h4 class="font-bold text-blue-900 mb-2">💡 Recommandations</h4>
+        <h4 class="font-bold text-blue-900 mb-2">Recommandations</h4>
         <ul class="text-xs space-y-1 text-blue-900">
           <li *ngIf="manualPercentage > 20">
             • <strong>Alerte:</strong> {{ manualPercentage }}% de paiements manuels - Encourage l'utilisation du chip ou sans contact

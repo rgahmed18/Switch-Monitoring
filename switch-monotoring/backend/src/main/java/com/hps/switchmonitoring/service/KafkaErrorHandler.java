@@ -63,15 +63,15 @@ public class KafkaErrorHandler {
 
       dlqKafkaTemplate.send(dlqMessage).whenComplete((sendResult, ex) -> {
         if (ex != null) {
-          logger.error("❌ Erreur lors de l'envoi du message d'erreur transaction vers le DLQ: {}", 
+          logger.error("Erreur lors de l'envoi du message d'erreur transaction vers le DLQ: {}",
               key, ex);
         } else {
-          logger.warn("⚠️  Message de transaction en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
+          logger.warn("Message de transaction en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
               key, sendResult.getRecordMetadata().partition(), sendResult.getRecordMetadata().offset());
         }
       });
     } catch (Exception e) {
-      logger.error("❌ Exception critique lors du traitement DLQ transaction: {}", 
+      logger.error("Exception critique lors du traitement DLQ transaction: {}",
           event.getExternalId(), e);
     }
   }
@@ -105,15 +105,15 @@ public class KafkaErrorHandler {
 
       dlqKafkaTemplate.send(dlqMessage).whenComplete((sendResult, ex) -> {
         if (ex != null) {
-          logger.error("❌ Erreur lors de l'envoi du message d'erreur alerte vers le DLQ: {}", 
+          logger.error("Erreur lors de l'envoi du message d'erreur alerte vers le DLQ: {}",
               key, ex);
         } else {
-          logger.warn("⚠️  Message d'alerte en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
+          logger.warn("Message d'alerte en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
               key, sendResult.getRecordMetadata().partition(), sendResult.getRecordMetadata().offset());
         }
       });
     } catch (Exception e) {
-      logger.error("❌ Exception critique lors du traitement DLQ alerte: {}", 
+      logger.error("Exception critique lors du traitement DLQ alerte: {}",
           event.getId(), e);
     }
   }
@@ -147,15 +147,15 @@ public class KafkaErrorHandler {
 
       dlqKafkaTemplate.send(dlqMessage).whenComplete((sendResult, ex) -> {
         if (ex != null) {
-          logger.error("❌ Erreur lors de l'envoi du message d'erreur socket vers le DLQ: {}", 
+          logger.error("Erreur lors de l'envoi du message d'erreur socket vers le DLQ: {}",
               key, ex);
         } else {
-          logger.warn("⚠️  Message socket en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
+          logger.warn("Message socket en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
               key, sendResult.getRecordMetadata().partition(), sendResult.getRecordMetadata().offset());
         }
       });
     } catch (Exception e) {
-      logger.error("❌ Exception critique lors du traitement DLQ socket: {}", 
+      logger.error("Exception critique lors du traitement DLQ socket: {}",
           event.getTransactionId(), e);
     }
   }
@@ -189,15 +189,15 @@ public class KafkaErrorHandler {
 
       dlqKafkaTemplate.send(dlqMessage).whenComplete((sendResult, ex) -> {
         if (ex != null) {
-          logger.error("❌ Erreur lors de l'envoi du message d'erreur traitement vers le DLQ: {}", 
+          logger.error("Erreur lors de l'envoi du message d'erreur traitement vers le DLQ: {}",
               key, ex);
         } else {
-          logger.warn("⚠️  Message de traitement en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
+          logger.warn("Message de traitement en erreur envoyé au DLQ: {} (partition: {}, offset: {})",
               key, sendResult.getRecordMetadata().partition(), sendResult.getRecordMetadata().offset());
         }
       });
     } catch (Exception e) {
-      logger.error("❌ Exception critique lors du traitement DLQ événement: {}", 
+      logger.error("Exception critique lors du traitement DLQ événement: {}",
           event.getExternalId(), e);
     }
   }
