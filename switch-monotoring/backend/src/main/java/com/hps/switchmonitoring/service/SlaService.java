@@ -7,6 +7,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+/**
+ * Gestion des instantanes (snapshots) d'indicateurs de niveau de service :
+ * taux de succes, latence moyenne/P95, taux de disponibilite, et indicateur
+ * de depassement de SLA. Utilise pour l'historique et le suivi de tendance
+ * affiches sur la page de suivi SLA.
+ */
 @Service
 public class SlaService {
 

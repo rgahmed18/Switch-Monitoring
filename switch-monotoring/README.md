@@ -96,7 +96,7 @@ Un lien d'activation valable **48 heures** est envoyé par email.
 2. [Prérequis](#2-prérequis)
 3. [Installation rapide](#3-installation-rapide)
 4. [Configuration](#4-configuration)
-5. [Démarrage](#5-démarrage)
+5. [Démarrage](#5-démarrage) — dont [Déploiement Docker complet](#56-déploiement-docker-complet-oracle--backend--frontend)
 6. [Pages de l'application](#6-pages-de-lapplication)
 7. [Gestion des utilisateurs](#7-gestion-des-utilisateurs)
 8. [API Backend](#8-api-backend)
@@ -294,6 +294,54 @@ docker compose run --rm load-generator
 ```
 
 Injecte **100 000 transactions** à **200 tx/s** dans Kafka. Utiliser pour tester le dashboard en charge réelle.
+
+### 5.6 Déploiement Docker complet (Oracle + backend + frontend)
+
+En plus du scénario de développement (§5.1 à 5.4, backend/frontend lancés manuellement), le `docker-compose.yml` sait aussi démarrer **toute la plateforme en conteneurs**, y compris Oracle, le backend et le frontend — utile pour une démonstration ou un déploiement sans installer ni Java, ni Node, ni Oracle sur la machine hôte.
+
+```bash
+# Démarrer l'ensemble de la stack (Oracle, Kafka, backend, frontend)
+docker compose up -d
+
+# Vérifier que tous les conteneurs sont "Up" (Oracle doit passer "healthy")
+docker compose ps
+```
+
+Conteneurs lancés dans ce mode :
+
+| Conteneur | Image / build | Port exposé | Rôle |
+|---|---|---|---|
+| `oracle` | gvenzl/oracle-free:23-slim-faststart | 1521 | Base de données (PDB `FREEPDB1`), exécute automatiquement les scripts de `db/init/` et `db/migration/` au premier démarrage |
+| `zookeeper` | confluentinc/cp-zookeeper:7.5.0 | 2181 | Coordination Kafka |
+| `kafka` | confluentinc/cp-kafka:7.5.0 | 9092 (hôte) / 29092 (réseau interne) | Broker de messages |
+| `kafka-ui` | provectuslabs/kafka-ui:latest | 8088 | Interface web Kafka |
+| `backend` | build depuis `backend/Dockerfile` | 8080 | API Spring Boot, attend qu'Oracle soit `healthy` et que Kafka soit démarré |
+| `frontend` | build depuis `frontend/Dockerfile` | 4200 (nginx sert le build Angular en production, proxy `/api/v1` vers le backend) | Interface web |
+
+Points clés de ce mode :
+
+- **Variables d'environnement** : les mêmes clés `.env` que le mode développement (§4.1) sont réutilisées — `DB_USERNAME`, `DB_PASSWORD`, `MAIL_*`, `FRONTEND_URL` — avec des valeurs par défaut définies dans `docker-compose.yml` si `.env` est absent.
+- **Connexion Oracle du backend conteneurisé** : `jdbc:oracle:thin:@//oracle:1521/FREEPDB1` (nom de service Docker, pas `localhost`) — différent de la connexion `XEPDB1` utilisée en développement local (§10).
+- **Initialisation de la base** : au premier démarrage du conteneur `oracle`, les scripts SQL de `backend/src/main/resources/db/init/` et `db/migration/` sont exécutés automatiquement dans l'ordre (montés en lecture seule dans `/container-entrypoint-initdb.d/`) — aucune action manuelle requise, contrairement au mode développement (§10) où Flyway doit être lancé à la main.
+- **Redémarrage automatique** : tous les services ont `restart: unless-stopped` — un conteneur qui plante (ex : backend démarré avant qu'Oracle soit prêt) est relancé automatiquement par Docker.
+- **Reconstruire après une modification du code** :
+
+```bash
+docker compose build backend frontend
+docker compose up -d
+```
+
+- **Tout arrêter** (les données Oracle/Kafka restent dans les volumes Docker) :
+
+```bash
+docker compose down
+```
+
+- **Tout arrêter et supprimer les données** (repartir d'une base vide) :
+
+```bash
+docker compose down -v
+```
 
 ---
 

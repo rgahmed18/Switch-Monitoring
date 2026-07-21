@@ -1,6 +1,9 @@
 {
   "name": "switch-monitoring-angular",
   "version": "0.1.0",
+  "description": "Frontend Angular de la plateforme de supervision temps reel des transactions monetiques ISO 8583 (Switch Monitoring / HPS)",
+  "author": "Ahmed R.",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "kill-port": "npx kill-port 4200",

@@ -12,6 +12,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Simulateur de trafic ISO 8583 : genere automatiquement des transactions
+ * realistes (montants, devises alpha ISO 4217, modes d'entree carte, reseaux)
+ * par lots de {@link #TXS_PER_MINUTE} toutes les 60 secondes, jusqu'a
+ * atteindre {@link #MAX_TOTAL} transactions.
+ *
+ * Utilise pour peupler le dashboard en environnement de demonstration/test
+ * sans dependre d'un flux ISO 8583 reel. Pilotable via SimulatorController
+ * (reset du compteur, purge et regeneration).
+ */
 @Component
 public class IsoSimulatorTask {
 

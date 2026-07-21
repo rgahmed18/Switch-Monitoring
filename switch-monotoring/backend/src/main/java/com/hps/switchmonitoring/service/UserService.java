@@ -17,6 +17,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * Gestion du cycle de vie complet des comptes utilisateurs : authentification,
+ * invitation, activation, reinitialisation de mot de passe et administration
+ * (blocage/deblocage, suppression).
+ *
+ * Il n'y a pas de Spring Security ni de JWT dans ce projet : l'identite et le
+ * role de l'utilisateur courant sont portes par les en-tetes HTTP
+ * X-User-Email/X-User-Role, verifies manuellement par les controleurs qui en
+ * ont besoin. Ce service est la seule source de verite pour les mots de passe
+ * (hash BCrypt force 12) et les jetons d'activation/reinitialisation
+ * (SecureRandom 256 bits, encodage Base64 URL-safe).
+ */
 @Service
 public class UserService {
 

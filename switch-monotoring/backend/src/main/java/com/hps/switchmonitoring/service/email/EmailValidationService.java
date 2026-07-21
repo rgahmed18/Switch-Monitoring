@@ -14,6 +14,15 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Validation d'adresses email en 2 temps : format (regex) puis existence
+ * reelle du domaine (lookup DNS des enregistrements MX). Rejette egalement
+ * les domaines jetables connus (mailinator, yopmail, etc.) et les domaines
+ * de test conventionnels (example.com, test.com).
+ *
+ * Utilise avant la creation/invitation d'un utilisateur pour eviter de
+ * saisir une adresse qui ne pourra jamais recevoir l'email d'activation.
+ */
 @Service
 public class EmailValidationService {
 

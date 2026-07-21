@@ -14,7 +14,7 @@
   <artifactId>switch-monitoring-backend</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>switch-monitoring-backend</name>
-  <description>Backend for switch monitoring platform</description>
+  <description>API REST de supervision temps reel des transactions monetiques ISO 8583 / PowerCARD : suivi des transactions, alertes, SLA, analytique geographique et par reseau de carte, administration des utilisateurs et des projets.</description>
 
   <properties>
     <java.version>17</java.version>

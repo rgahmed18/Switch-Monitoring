@@ -10,6 +10,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+/**
+ * Envoi des emails transactionnels de l'application (invitation, activation,
+ * reinitialisation de mot de passe) via JavaMailSender.
+ *
+ * L'injection de {@code mailSender} est optionnelle ({@code @Autowired(required = false)}) :
+ * si aucun serveur SMTP n'est configure (propriete {@code spring.mail.host} absente),
+ * ce service reste inactif et les appelants (UserService) affichent le lien
+ * d'activation/reinitialisation directement dans l'interface a la place.
+ */
 @Service
 public class EmailSenderService {
 
