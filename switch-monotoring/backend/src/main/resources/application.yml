@@ -10,6 +10,13 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      # Le healthcheck Docker d'Oracle peut passer "healthy" avant que le
+      # listener TNS ait fini d'enregistrer le service FREEPDB1 (ORA-12514).
+      # On tolere les echecs de connexion initiaux au lieu de faire planter
+      # l'application au premier essai (comportement par defaut de Hikari).
+      initialization-fail-timeout: -1
+      connection-timeout: 30000
   jpa:
     hibernate:
       ddl-auto: validate
