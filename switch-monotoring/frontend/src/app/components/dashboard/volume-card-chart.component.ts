@@ -61,10 +61,23 @@ export class VolumeCardChartComponent implements OnChanges {
   private updateChart() {
     let visa = 0, mastercard = 0, autres = 0;
 
+    // Ne compter que les transactions dont l'heure de transmission est deja
+    // passee (meme principe que volume-chart.component.ts) : le total
+    // progresse naturellement minute apres minute au lieu d'afficher
+    // immediatement la totalite du jeu de donnees des le premier chargement.
+    const nowMs = Date.now();
+
     // Exclude ATM/GAB  -  they have their own dedicated page
-    const eligible = this.transactions.filter(tx =>
-      tx.channel !== 'ATM' && tx.channel !== 'GAB'
-    );
+    const eligible = this.transactions.filter(tx => {
+      if (tx.channel === 'ATM' || tx.channel === 'GAB') return false;
+
+      const raw = (tx.transmissionDateAndTime || '').toString().trim();
+      if (!raw) return false;
+      const ts = new Date(raw).getTime();
+      if (!ts || isNaN(ts) || ts <= 0) return false;
+
+      return ts <= nowMs;
+    });
 
     eligible.forEach(tx => {
       const network = resolveCardNetwork(tx);

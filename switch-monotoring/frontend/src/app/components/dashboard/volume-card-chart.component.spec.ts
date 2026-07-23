@@ -2,7 +2,8 @@ import { VolumeCardChartComponent } from './volume-card-chart.component';
 import { Transaction } from '../../models';
 
 function tx(overrides: Partial<Transaction>): Transaction {
-  return { ...overrides } as Transaction;
+  const past = new Date(Date.now() - 60_000).toISOString();
+  return { transmissionDateAndTime: past, ...overrides } as Transaction;
 }
 
 describe('VolumeCardChartComponent', () => {
@@ -64,5 +65,15 @@ describe('VolumeCardChartComponent', () => {
     component.ngOnChanges({});
 
     expect(component.chartData.datasets[0].data).toBe(before);
+  });
+
+  it('ne devrait pas compter une transaction dont la transmission est future', () => {
+    const future = new Date(Date.now() + 60_000).toISOString();
+    component.transactions = [
+      tx({ channel: 'POS', networkCode: '01', transmissionDateAndTime: future } as any),
+    ];
+    component.ngOnChanges({ transactions: {} as any });
+
+    expect(component.chartData.datasets[0].data).toEqual([0, 0, 0]);
   });
 });

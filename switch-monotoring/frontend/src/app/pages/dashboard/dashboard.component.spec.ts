@@ -353,9 +353,10 @@ describe('DashboardComponent', () => {
 
   describe('KPIs reseau (Visa / Mastercard)', () => {
     it('devrait comptabiliser les transactions Visa via productCode', () => {
+      const past = new Date(Date.now() - 60_000).toISOString();
       component.transactions = [
-        tx({ productCode: 'VIS', status: 'APPROVED' }),
-        tx({ productCode: 'VIS', status: 'DECLINED' }),
+        tx({ productCode: 'VIS', status: 'APPROVED', transmissionDateAndTime: past }),
+        tx({ productCode: 'VIS', status: 'DECLINED', transmissionDateAndTime: past }),
       ];
       component['calculateNetworkKpis']();
 
@@ -364,12 +365,23 @@ describe('DashboardComponent', () => {
     });
 
     it('devrait comptabiliser les transactions Mastercard via networkCode', () => {
+      const past = new Date(Date.now() - 60_000).toISOString();
       component.transactions = [
-        tx({ networkCode: '02', status: 'APPROVED' }),
+        tx({ networkCode: '02', status: 'APPROVED', transmissionDateAndTime: past }),
       ];
       component['calculateNetworkKpis']();
 
       expect(component.mastercardCount).toBe(1);
+    });
+
+    it('ne devrait pas compter une transaction dont la transmission est future', () => {
+      const future = new Date(Date.now() + 60_000).toISOString();
+      component.transactions = [
+        tx({ productCode: 'VIS', status: 'APPROVED', transmissionDateAndTime: future }),
+      ];
+      component['calculateNetworkKpis']();
+
+      expect(component.visaCount).toBe(0);
     });
 
     it('devrait retourner 0 refus sans transaction du reseau', () => {

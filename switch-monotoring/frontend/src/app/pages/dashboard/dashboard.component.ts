@@ -1381,7 +1381,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private calculateNetworkKpis() {
     let vp = 0, vr = 0, mp = 0, mr = 0;
 
+    // Ne compter que les transactions dont l'heure de transmission est deja
+    // passee (meme principe que volume-chart.component.ts) : le total
+    // progresse naturellement minute apres minute au lieu d'afficher
+    // immediatement la totalite du jeu de donnees des le premier chargement.
+    const nowMs = Date.now();
+
     this.transactions.forEach(tx => {
+      const raw = (tx.transmissionDateAndTime || '').toString().trim();
+      if (!raw) return;
+      const ts = new Date(raw).getTime();
+      if (!ts || isNaN(ts) || ts > nowMs) return;
+
       const rc = (tx.responseCode || '').toString().trim();
       const isDeclined = tx.status === 'DECLINED'
         || (rc && rc !== '00' && rc !== '000' && tx.status !== 'APPROVED');
